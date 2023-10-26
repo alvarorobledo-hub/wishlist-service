@@ -11,5 +11,5 @@ import java.util.List;
 @Jacksonized
 public class WishlistDetail {
     String name;
-    List<Product> productIds;
+    List<Product> products;
 }
