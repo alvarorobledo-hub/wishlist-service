@@ -1,7 +1,7 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.client.ProductApiClient;
-import com.everis.wishlist.dto.response.UserWishlistResponse;
+import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final UserWishlistRepository userWishlistRepository;
 
     @Override
-    public UserWishlistResponse findUserWishlist(final UUID userId, final UUID wishlistId) {
+    public UserWishlistDetailResponse findUserWishlist(final UUID userId, final UUID wishlistId) {
         return null;
     }
 }
