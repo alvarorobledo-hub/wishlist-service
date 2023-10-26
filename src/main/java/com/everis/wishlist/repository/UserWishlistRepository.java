@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface UserWishlistRepository {
 
-    Wishlist findUserWishList(UUID userId, UUID wishlistId);
+    Wishlist findUserWishlist(UUID userId, UUID wishlistId);
 }

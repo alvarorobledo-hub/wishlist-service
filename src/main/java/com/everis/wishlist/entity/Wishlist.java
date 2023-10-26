@@ -1,15 +1,15 @@
 package com.everis.wishlist.entity;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
-@Value
+@Data
 @Builder
 @Jacksonized
 public class Wishlist {
     String name;
-    List<Product> products;
+    List<Long> productIds;
 }
