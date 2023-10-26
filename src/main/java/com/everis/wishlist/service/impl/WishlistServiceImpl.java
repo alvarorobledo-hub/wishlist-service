@@ -4,10 +4,12 @@ import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.InternalServerException;
+import com.everis.wishlist.exceptions.UserWishlistNotFound;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -30,6 +32,8 @@ public class WishlistServiceImpl implements WishlistService {
                     .wishlistDetail(wishlistDetail)
                     .build();
 
+        } catch (final EmptyResultDataAccessException e) {
+            throw new UserWishlistNotFound("UserId or WishlistId does not exists");
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
