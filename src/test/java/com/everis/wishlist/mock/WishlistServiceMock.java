@@ -1,11 +1,13 @@
 package com.everis.wishlist.mock;
 
+import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
 import com.everis.wishlist.entity.Product;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static com.everis.wishlist.utils.FileHelper.load;
@@ -27,5 +29,9 @@ public class WishlistServiceMock {
 
     public static WishlistDetail getWishlistDetail() throws JsonProcessingException {
         return getObject(load("/wishlist_detail.json"), new TypeReference<WishlistDetail>() {});
+    }
+
+    public static CreateUserWishlistRequest getCreateUserWishlistRequest() throws JsonProcessingException {
+        return getObject(load("/requests/create_user_wishlist.json"), new TypeReference<CreateUserWishlistRequest>() {});
     }
 }
