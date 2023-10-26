@@ -17,10 +17,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserWishlistController {
 
-    private final WishListService wishListService;
+    private final WishlistService wishlistService;
 
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
-        return new ResponseEntity<>(wishListService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
+        return new ResponseEntity<>(wishlistService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
     }
 }
