@@ -1,6 +1,7 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
+import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.InternalServerException;
@@ -15,10 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.List;
+
 import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
 import static com.everis.wishlist.constants.WishlistServiceConstants.WISHLIST_ID;
-import static com.everis.wishlist.mock.WishlistServiceMock.getWishlist;
-import static com.everis.wishlist.mock.WishlistServiceMock.getWishlistDetail;
+import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -36,7 +38,7 @@ class WishlistServiceImplTest {
     private UserWishlistServiceImpl userWishlistService;
 
     @Test
-    void should_return_a_detail_wishlist() throws JsonProcessingException {
+    void should_return_a_user_detail_wishlist() throws JsonProcessingException {
 
         final Wishlist wishlist = getWishlist();
         final WishlistDetail wishlistDetail = getWishlistDetail();
@@ -56,7 +58,7 @@ class WishlistServiceImplTest {
     }
 
     @Test
-    void should_throw_error_if_userId_and_wishlistId_not_found() throws JsonProcessingException {
+    void should_throw_error_if_userId_and_wishlistId_not_found_on_find_user_wishlist() throws JsonProcessingException {
 
         // GIVEN
         doThrow(new EmptyResultDataAccessException(0)).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
@@ -74,7 +76,7 @@ class WishlistServiceImplTest {
     }
 
     @Test
-    void should_throw_error_if_something_went_wrong() throws JsonProcessingException {
+    void should_throw_error_if_something_went_wrong_on_find_user_wishlist() throws JsonProcessingException {
 
         final Wishlist wishlist = getWishlist();
 
@@ -92,6 +94,38 @@ class WishlistServiceImplTest {
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         verify(wishlistMapper).from(wishlist);
 
+    }
+
+    @Test
+    void should_return_user_wishlists() throws JsonProcessingException {
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+
+        // WHEN
+        final UserWishlistsResponse response = userWishlistService.findUserWishlists(USER_ID);
+
+        // THEN
+        assertAll("Response should be:",
+                () -> assertEquals(wishlists, response.getWishlists()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+    }
+
+    @Test
+    void should_throw_error_if_something_went_wrong_on_find_user_wishlists() {
+
+        // GIVEN
+        doThrow(new RuntimeException()).when(userWishlistRepository).findUserWishlists(USER_ID);
+
+        // WHEN
+        final InternalServerException exception = assertThrows(InternalServerException.class,
+                () -> userWishlistService.findUserWishlists(USER_ID));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("Something went wrong", exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
     }
 
 }
