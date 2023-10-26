@@ -4,7 +4,7 @@ import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
-import com.everis.wishlist.exceptions.InternalServerException;
+import com.everis.wishlist.exceptions.http.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;

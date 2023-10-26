@@ -1,6 +1,6 @@
 package com.everis.wishlist.controller.handler;
 
-import com.everis.wishlist.exceptions.InternalServerException;
+import com.everis.wishlist.exceptions.http.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

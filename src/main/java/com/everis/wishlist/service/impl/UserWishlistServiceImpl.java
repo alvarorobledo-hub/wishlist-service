@@ -5,7 +5,8 @@ import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
-import com.everis.wishlist.exceptions.InternalServerException;
+import com.everis.wishlist.exceptions.http.BadRequestException;
+import com.everis.wishlist.exceptions.http.InternalServerException;
 import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
@@ -38,7 +39,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
             log.info("Creating wishlist for user ({})", userId);
 
             if (body.getProductIds().size() == 0) {
-                throw new
+                throw new BadRequestException("ProductIds must have minimum one product");
             }
 
             final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();

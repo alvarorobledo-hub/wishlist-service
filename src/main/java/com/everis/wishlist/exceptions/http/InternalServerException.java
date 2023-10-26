@@ -1,4 +1,4 @@
-package com.everis.wishlist.exceptions;
+package com.everis.wishlist.exceptions.http;
 
 import lombok.extern.slf4j.Slf4j;
 
