@@ -30,7 +30,7 @@ public class WishlistMapper {
 
         return WishlistDetail.builder()
                 .name(wishlist.getName())
-                .productIds(products)
+                .products(products)
                 .build();
     }
 }
