@@ -1,5 +1,6 @@
 package com.everis.wishlist.mock;
 
+import com.everis.wishlist.entity.Product;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +12,10 @@ import static com.everis.wishlist.utils.FileHelper.load;
 import static com.everis.wishlist.utils.ObjectMapperHelper.getObject;
 
 public class WishlistServiceMock {
+
+    public static String getProduct(final Integer id) {
+        return load("/products/product" + id + ".json");
+    }
 
     public static Wishlist getWishlist() throws JsonProcessingException {
         return getObject(load("/wishlist.json"), new TypeReference<Wishlist>() {});
