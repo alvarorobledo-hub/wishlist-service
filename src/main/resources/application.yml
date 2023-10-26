@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:wishlist;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'src/main/resources/db/schema.sql'
+    driver-class-name: org.h2.Driver
+    username: admin
+    password: admin
+    initialization-mode: always
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
