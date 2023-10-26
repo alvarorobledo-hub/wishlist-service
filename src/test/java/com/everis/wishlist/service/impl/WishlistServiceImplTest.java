@@ -1,19 +1,23 @@
 package com.everis.wishlist.service.impl;
 
+import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
+import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.everis.wishlist.exceptions.http.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
+import com.everis.wishlist.validator.UserWishlistValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
@@ -30,12 +34,84 @@ class WishlistServiceImplTest {
 
     @Mock
     private WishlistMapper wishlistMapper;
-
+    @Mock
+    private UserWishlistValidator userWishlistValidator;
     @Mock
     private UserWishlistRepository userWishlistRepository;
 
     @InjectMocks
     private UserWishlistServiceImpl userWishlistService;
+
+    @Test
+    void should_create_a_user_wishlist() throws JsonProcessingException {
+
+        final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doReturn(WISHLIST_ID).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+
+        // WHEN
+        userWishlistService.createUserWishlist(USER_ID, body);
+
+        // THEN
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+    }
+
+    @Test
+    void should_throw_error_if_wishlist_name_already_exist_on_create_a_user_wishlist() throws JsonProcessingException {
+
+        final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doThrow(new DuplicateKeyException("Key is duplicated")).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+
+        // WHEN
+        final BadRequestException exception = assertThrows(BadRequestException.class,
+                () -> userWishlistService.createUserWishlist(USER_ID, body));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(format("Name %s for wishlist already exists", body.getName()), exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository, never()).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+    }
+
+    @Test
+    void should_throw_error_if_something_went_wrong_on_create_a_user_wishlist() throws JsonProcessingException {
+
+        final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doReturn(WISHLIST_ID).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+
+        // WHEN
+        final InternalServerException exception = assertThrows(InternalServerException.class,
+                () -> userWishlistService.createUserWishlist(USER_ID, body));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("Something went wrong", exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+    }
 
     @Test
     void should_return_a_user_detail_wishlist() throws JsonProcessingException {
