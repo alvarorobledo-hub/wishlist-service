@@ -51,16 +51,16 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
         doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
-        doReturn(WISHLIST_ID).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        doNothing().when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
 
         // WHEN
-        userWishlistService.createUserWishlist(USER_ID, body);
+        userWishlistService.createUserWishlist(USER_ID, WISHLIST_ID, body);
 
         // THEN
         verify(userWishlistRepository).findUserWishlists(USER_ID);
         verify(userWishlistValidator).validate(USER_ID, body, wishlists);
-        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
 
@@ -73,18 +73,18 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
         doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
-        doThrow(new DuplicateKeyException("Key is duplicated")).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        doThrow(new DuplicateKeyException("Key is duplicated")).when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
 
         // WHEN
         final BadRequestException exception = assertThrows(BadRequestException.class,
-                () -> userWishlistService.createUserWishlist(USER_ID, body));
+                () -> userWishlistService.createUserWishlist(USER_ID, WISHLIST_ID, body));
 
         // THEN
         assertAll("Exception should be:",
                 () -> assertEquals(format("Name %s for wishlist already exists", body.getName()), exception.getMessage()));
         verify(userWishlistRepository).findUserWishlists(USER_ID);
         verify(userWishlistValidator).validate(USER_ID, body, wishlists);
-        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository, never()).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
 
@@ -97,19 +97,19 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
         doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
-        doReturn(WISHLIST_ID).when(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        doNothing().when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
 
         // WHEN
         final InternalServerException exception = assertThrows(InternalServerException.class,
-                () -> userWishlistService.createUserWishlist(USER_ID, body));
+                () -> userWishlistService.createUserWishlist(USER_ID, WISHLIST_ID, body));
 
         // THEN
         assertAll("Exception should be:",
                 () -> assertEquals("Something went wrong", exception.getMessage()));
         verify(userWishlistRepository).findUserWishlists(USER_ID);
         verify(userWishlistValidator).validate(USER_ID, body, wishlists);
-        verify(userWishlistRepository).createWishlist(USER_ID, body.getName());
+        verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
 

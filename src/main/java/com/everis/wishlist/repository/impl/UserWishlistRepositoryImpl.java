@@ -20,14 +20,11 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public UUID createWishlist(final UUID userId, final String name) {
+    public void createWishlist(final UUID userId, final UUID wishlistId, final String name) {
 
-        final UUID generatedId = UUID.randomUUID();
+        insertWishlist(wishlistId, name);
+        insertUserWishlist(userId, wishlistId);
 
-        insertWishlist(generatedId, name);
-        insertUserWishlist(userId, generatedId);
-
-        return generatedId;
     }
 
     @Override

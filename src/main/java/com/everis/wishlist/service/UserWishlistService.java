@@ -7,7 +7,7 @@ import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import java.util.UUID;
 
 public interface UserWishlistService {
-    void createUserWishlist(UUID userId, CreateUserWishlistRequest body);
+    void createUserWishlist(UUID userId, UUID wishlistId, CreateUserWishlistRequest body);
     UserWishlistDetailResponse findUserWishlist(UUID userId, UUID wishlistId);
     UserWishlistsResponse findUserWishlists(UUID userId);
 }

@@ -6,7 +6,6 @@ import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.service.UserWishlistService;
-import com.everis.wishlist.utils.ObjectMapperHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,12 +39,12 @@ class UserWishlistControllerIntegrationTest {
         final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
 
         // GIVEN
-        doNothing().when(userWishlistService).createUserWishlist(USER_ID, body);
+        doNothing().when(userWishlistService).createUserWishlist(USER_ID, WISHLIST_ID, body);
 
         // WHEN, THEN
-        mockMvc.perform(post("/api/v1/users/{userId}/wishlists", USER_ID)
+        mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}", USER_ID, WISHLIST_ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(ObjectMapperHelper.getString(body)))
+                        .content(getString(body)))
                 .andExpect(status().isCreated());
     }
 
