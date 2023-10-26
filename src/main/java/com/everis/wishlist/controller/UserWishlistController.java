@@ -21,7 +21,8 @@ public class UserWishlistController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createUserWishlist(@PathVariable UUID userId, @RequestBody CreateUserWishlistRequest body) {
-        return new ResponseEntity<>(wishlistService.createUserWishlist(userId, body));
+        wishlistService.createUserWishlist(userId, body);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
