@@ -12,8 +12,10 @@ import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.UserWishlistService;
+import com.everis.wishlist.validator.UserWishlistValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,34 +28,30 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserWishlistServiceImpl implements UserWishlistService {
 
-    private static final Integer MAX_WISHLISTS_PER_USER = 5;
-
     private final WishlistMapper wishlistMapper;
+    private final UserWishlistValidator userWishlistValidator;
     private final UserWishlistRepository userWishlistRepository;
 
     @Transactional
     @Override
     public void createUserWishlist(final UUID userId, final CreateUserWishlistRequest body) {
+
+        log.info("Creating wishlist for user ({})", userId);
+        final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
+
+        userWishlistValidator.validate(userId, body, wishlists);
+
         try {
 
-            log.info("Creating wishlist for user ({})", userId);
-
-            if (body.getProductIds().size() == 0) {
-                throw new BadRequestException("ProductIds must have minimum one product");
+            final UUID wishlistId = userWishlistRepository.createWishlist(userId, body.getName());
+            for (Long productId : body.getProductIds()) {
+                userWishlistRepository.createWishlistProduct(wishlistId, productId);
             }
 
-            final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
+            log.info("User wishlist with id {} created successfully", wishlistId);
 
-            if (wishlists.size() >= MAX_WISHLISTS_PER_USER) {
-                throw new MaxWishlistsPerUserException("User %s actually have %s wishlists. Can not create more", userId, MAX_WISHLISTS_PER_USER);
-            }
-
-            final Wishlist wishlist = userWishlistRepository.createWishlist(userId, body.getName());
-            userWishlistRepository.createUserWishlist(userId, wishlist.getId());
-            userWishlistRepository.createWishlistProduct(wishlist.getId(), body.getProductIds());
-
-            log.info("User wishlist with id {} created successfully", wishlist.getId());
-
+        } catch (final DuplicateKeyException e) {
+            throw new BadRequestException("Name %s for wishlist already exists", body.getName());
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }

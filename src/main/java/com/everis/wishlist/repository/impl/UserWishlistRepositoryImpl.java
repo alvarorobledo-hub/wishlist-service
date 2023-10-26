@@ -10,8 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
-import static com.everis.wishlist.constants.SQLFileConstants.FILE_FIND_USER_WISHLIST;
-import static com.everis.wishlist.constants.SQLFileConstants.FILE_FIND_USER_WISHLISTS;
+import static com.everis.wishlist.constants.SQLFileConstants.*;
 import static com.everis.wishlist.utils.FileHelper.load;
 
 @Repository
@@ -19,6 +18,26 @@ import static com.everis.wishlist.utils.FileHelper.load;
 public class UserWishlistRepositoryImpl implements UserWishlistRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Override
+    public UUID createWishlist(final UUID userId, final String name) {
+
+        final UUID generatedId = UUID.randomUUID();
+
+        insertWishlist(generatedId, name);
+        insertUserWishlist(userId, generatedId);
+
+        return generatedId;
+    }
+
+    @Override
+    public void createWishlistProduct(final UUID wishlistId, final Long productId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("wishlist_id", wishlistId);
+        params.put("product_id", productId);
+
+        jdbcTemplate.update(load(FILE_CREATE_WISHLIST_PRODUCT), params);
+    }
 
     @Override
     public Wishlist findUserWishlist(final UUID userId, final UUID wishlistId) {
@@ -46,6 +65,22 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
         }
 
         return wishlists;
+    }
+
+    private void insertWishlist(final UUID wishlistId, final String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", wishlistId);
+        params.put("name", name);
+
+        jdbcTemplate.update(load(FILE_CREATE_WISHLIST), params);
+    }
+
+    private void insertUserWishlist(final UUID userId, final UUID wishlistId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_id", userId);
+        params.put("wishlist_id", wishlistId);
+
+        jdbcTemplate.update(load(FILE_CREATE_USER_WISHLIST), params);
     }
 
     private RowMapper<Wishlist> wishlistRowMapper() {
