@@ -9,11 +9,13 @@ import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements WishlistService {
@@ -24,16 +26,19 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public UserWishlistDetailResponse findUserWishlist(final UUID userId, final UUID wishlistId) {
         try {
+            log.info("Finding user wishlist with userId {} and wishlistId {}", userId, wishlistId);
 
             final Wishlist wishlist = userWishlistRepository.findUserWishlist(userId, wishlistId);
             final WishlistDetail wishlistDetail = wishlistMapper.from(wishlist);
+
+            log.info("Found user wishlist with wishlistId {} and name {}", wishlistId, wishlist.getName());
 
             return UserWishlistDetailResponse.builder()
                     .wishlistDetail(wishlistDetail)
                     .build();
 
         } catch (final EmptyResultDataAccessException e) {
-            throw new UserWishlistNotFound("UserId or WishlistId does not exists");
+            throw new UserWishlistNotFound("Wishlist with userId (%s) and wishlistId (%s) does not exists", userId, wishlistId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
