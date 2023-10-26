@@ -11,4 +11,8 @@ public class ObjectMapperHelper {
     public static <T> T getObject(String content, TypeReference<T> type) throws JsonProcessingException {
         return objectMapper.readValue(content, type);
     }
+
+    public static String getString(Object object) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(object);
+    }
 }

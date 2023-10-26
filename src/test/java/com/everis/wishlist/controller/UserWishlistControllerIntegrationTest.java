@@ -1,10 +1,12 @@
 package com.everis.wishlist.controller;
 
+import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.service.UserWishlistService;
+import com.everis.wishlist.utils.ObjectMapperHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,10 +18,12 @@ import java.util.List;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
 import static com.everis.wishlist.constants.WishlistServiceConstants.WISHLIST_ID;
-import static com.everis.wishlist.mock.WishlistServiceMock.getWishlistDetail;
-import static com.everis.wishlist.mock.WishlistServiceMock.getWishlists;
+import static com.everis.wishlist.mock.WishlistServiceMock.*;
+import static com.everis.wishlist.utils.ObjectMapperHelper.getString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -30,6 +34,20 @@ class UserWishlistControllerIntegrationTest {
 
     @MockBean
     private UserWishlistService userWishlistService;
+
+    @Test
+    void should_endpoint_create_user_wishlist() throws Exception {
+        final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
+
+        // GIVEN
+        doNothing().when(userWishlistService).createUserWishlist(USER_ID, body);
+
+        // WHEN, THEN
+        mockMvc.perform(post("/api/v1/users/{userId}/wishlists", USER_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ObjectMapperHelper.getString(body)))
+                .andExpect(status().isCreated());
+    }
 
     @Test
     void should_endpoint_get_user_wishlist_return_a_user_wishlist() throws Exception {
