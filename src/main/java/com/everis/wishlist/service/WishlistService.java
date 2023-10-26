@@ -5,5 +5,5 @@ import com.everis.wishlist.dto.response.UserWishlistResponse;
 import java.util.UUID;
 
 public interface WishlistService {
-    UserWishlistResponse findUserWishList(UUID userId, UUID wishlistId);
+    UserWishlistResponse findUserWishlist(UUID userId, UUID wishlistId);
 }

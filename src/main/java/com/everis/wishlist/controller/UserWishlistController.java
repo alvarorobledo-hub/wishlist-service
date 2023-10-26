@@ -1,6 +1,7 @@
 package com.everis.wishlist.controller;
 
 import com.everis.wishlist.dto.response.UserWishlistResponse;
+import com.everis.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
