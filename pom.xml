@@ -21,6 +21,7 @@
 		</sonar.coverage.exclusions>
 		<spring-cloud.version>2020.0.6</spring-cloud.version>
 		<swagger.version>2.7.0</swagger.version>
+		<powermock.version>2.0.9</powermock.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,6 +71,18 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito2</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
