@@ -1,10 +1,12 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
+import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
+import com.everis.wishlist.exceptions.UserWishlistsNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.UserWishlistService;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -39,6 +42,26 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
         } catch (final EmptyResultDataAccessException e) {
             throw new UserWishlistNotFoundException("Wishlist with userId (%s) and wishlistId (%s) does not exists", userId, wishlistId);
+        } catch (final Exception e) {
+            throw new InternalServerException("Something went wrong");
+        }
+    }
+
+    @Override
+    public UserWishlistsResponse findUserWishlists(final UUID userId) {
+        try {
+            log.info("Finding user wishlists with userId {}", userId);
+
+            final List<Wishlist> wishlists = userWishlistRepository.findUserWishlists(userId);
+
+            log.info("Found a total of {} wishlists for userId {}", wishlists.size(), userId);
+
+            return UserWishlistsResponse.builder()
+                    .wishlists(wishlists)
+                    .build();
+
+        } catch (final EmptyResultDataAccessException e) {
+            throw new UserWishlistsNotFoundException("User with id (%s) does not have any list", userId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
