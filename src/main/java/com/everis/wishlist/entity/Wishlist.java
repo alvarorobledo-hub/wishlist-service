@@ -1,5 +1,6 @@
 package com.everis.wishlist.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Data
 @Builder
 @Jacksonized
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Wishlist {
     UUID id;
     String name;

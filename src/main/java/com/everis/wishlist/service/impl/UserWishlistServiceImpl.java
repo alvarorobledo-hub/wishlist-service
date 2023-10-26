@@ -6,7 +6,6 @@ import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
-import com.everis.wishlist.exceptions.UserWishlistsNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.UserWishlistService;
@@ -60,8 +59,6 @@ public class UserWishlistServiceImpl implements UserWishlistService {
                     .wishlists(wishlists)
                     .build();
 
-        } catch (final EmptyResultDataAccessException e) {
-            throw new UserWishlistsNotFoundException("User with id (%s) does not have any list", userId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }

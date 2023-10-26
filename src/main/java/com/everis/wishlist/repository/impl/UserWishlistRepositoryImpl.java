@@ -10,7 +10,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
-import static com.everis.wishlist.constants.SQLFileConstants.FILE_FIND_USER_LIST;
+import static com.everis.wishlist.constants.SQLFileConstants.FILE_FIND_USER_WISHLIST;
+import static com.everis.wishlist.constants.SQLFileConstants.FILE_FIND_USER_WISHLISTS;
 import static com.everis.wishlist.utils.FileHelper.load;
 
 @Repository
@@ -25,12 +26,32 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
         params.put("user_id", userId);
         params.put("wishlist_id", wishlistId);
 
-        return jdbcTemplate.queryForObject(load(FILE_FIND_USER_LIST), params, wishListRowMapper());
+        return jdbcTemplate.queryForObject(load(FILE_FIND_USER_WISHLIST), params, wishlistRowMapper());
     }
 
-    private RowMapper<Wishlist> wishListRowMapper() {
+    @Override
+    public List<Wishlist> findUserWishlists(final UUID userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("user_id", userId);
+
+        final List<Map<String, Object>> rows = jdbcTemplate.queryForList(load(FILE_FIND_USER_WISHLISTS), params);
+        List<Wishlist> wishlists = new ArrayList<>();
+
+        for(Map<String, Object> row : rows) {
+            Wishlist wishlist = Wishlist.builder()
+                    .id((UUID) row.get("ID"))
+                    .name((String) row.get("NAME"))
+                    .build();
+            wishlists.add(wishlist);
+        }
+
+        return wishlists;
+    }
+
+    private RowMapper<Wishlist> wishlistRowMapper() {
         return (rs, rowNum) -> {
             Wishlist wishlist = Wishlist.builder()
+                    .id(rs.getObject("id", UUID.class))
                     .name(rs.getString("name"))
                     .build();
 

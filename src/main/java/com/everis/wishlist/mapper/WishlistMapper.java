@@ -29,6 +29,7 @@ public class WishlistMapper {
         }
 
         return WishlistDetail.builder()
+                .id(wishlist.getId())
                 .name(wishlist.getName())
                 .products(products)
                 .build();
