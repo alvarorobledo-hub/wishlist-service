@@ -1,7 +1,7 @@
 package com.everis.wishlist.controller.handler;
 
 import com.everis.wishlist.exceptions.InternalServerException;
-import com.everis.wishlist.exceptions.UserWishlistNotFound;
+import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,8 +15,8 @@ public class UserWishlistHandlerController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UserWishlistNotFound.class)
-    public ResponseEntity<String> handleUserWishlistNotFoundException(final UserWishlistNotFound e) {
+    @ExceptionHandler(UserWishlistNotFoundException.class)
+    public ResponseEntity<String> handleUserWishlistNotFoundException(final UserWishlistNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

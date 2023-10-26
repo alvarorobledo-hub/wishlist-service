@@ -1,7 +1,7 @@
 package com.everis.wishlist.controller;
 
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
-import com.everis.wishlist.service.WishlistService;
+import com.everis.wishlist.service.UserWishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserWishlistController {
 
-    private final WishlistService wishlistService;
+    private final UserWishlistService wishlistService;
 
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistDetailResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {

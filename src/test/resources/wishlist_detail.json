@@ -1,0 +1,26 @@
+{
+  "name": "test",
+  "products": [
+    {
+      "id": 4,
+      "name": "Jacket",
+      "size": "XL",
+      "price": "19.99",
+      "color": "BROWN"
+    },
+    {
+      "id": 5,
+      "name": "Jacket",
+      "size": "XL",
+      "price": "19.99",
+      "color": "RED"
+    },
+    {
+      "id": 6,
+      "name": "Jacket",
+      "size": "XL",
+      "price": "19.99",
+      "color": "RED"
+    }
+  ]
+}

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import static java.lang.String.format;
 
 @Slf4j
-public class UserWishlistNotFound extends RuntimeException {
+public class UserWishlistNotFoundException extends RuntimeException {
 
-    public UserWishlistNotFound(final String message, final Object... args) {
+    public UserWishlistNotFoundException(final String message, final Object... args) {
         super(format(message, args));
         log.error(format(message, args));
     }

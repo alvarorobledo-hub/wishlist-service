@@ -4,10 +4,10 @@ import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.InternalServerException;
-import com.everis.wishlist.exceptions.UserWishlistNotFound;
+import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
-import com.everis.wishlist.service.WishlistService;
+import com.everis.wishlist.service.UserWishlistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WishlistServiceImpl implements WishlistService {
+public class UserWishlistServiceImpl implements UserWishlistService {
 
     private final WishlistMapper wishlistMapper;
     private final UserWishlistRepository userWishlistRepository;
@@ -38,7 +38,7 @@ public class WishlistServiceImpl implements WishlistService {
                     .build();
 
         } catch (final EmptyResultDataAccessException e) {
-            throw new UserWishlistNotFound("Wishlist with userId (%s) and wishlistId (%s) does not exists", userId, wishlistId);
+            throw new UserWishlistNotFoundException("Wishlist with userId (%s) and wishlistId (%s) does not exists", userId, wishlistId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
