@@ -1,5 +1,7 @@
 package com.everis.wishlist.controller.handler;
 
+import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
+import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.everis.wishlist.exceptions.http.InternalServerException;
 import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,23 @@ class UserWishlistHandlerControllerTest {
 
     @InjectMocks
     private UserWishlistHandlerController userWishlistHandlerController;
+
+    @Test
+    void handler_should_throw_bad_request_exception() {
+
+        final String errorMsg = "Bad request message";
+
+        // GIVEN
+        final BadRequestException exception = new BadRequestException(errorMsg);
+
+        // WHEN
+        final ResponseEntity<String> response = userWishlistHandlerController.handleBadRequestException(exception);
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
+                () -> assertEquals(errorMsg, response.getBody()));
+    }
 
     @Test
     void handler_should_throw_internal_server_exception() {
@@ -47,6 +66,22 @@ class UserWishlistHandlerControllerTest {
         // THEN
         assertAll("Exception should be:",
                 () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
+                () -> assertEquals(errorMsg, response.getBody()));
+    }
+
+    @Test
+    void handler_should_throw_max_wishlists_per_user_exception() {
+        final String errorMsg = "User 123 actually have 5 wishlists. Can not create more";
+
+        // GIVEN
+        final MaxWishlistsPerUserException exception = new MaxWishlistsPerUserException(errorMsg);
+
+        // WHEN
+        final ResponseEntity<String> response = userWishlistHandlerController.handleMaxWishlistsPerUserException(exception);
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(HttpStatus.CONFLICT, response.getStatusCode()),
                 () -> assertEquals(errorMsg, response.getBody()));
     }
 
