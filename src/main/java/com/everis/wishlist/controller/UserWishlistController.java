@@ -1,5 +1,6 @@
 package com.everis.wishlist.controller;
 
+import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.service.UserWishlistService;
@@ -19,7 +20,7 @@ public class UserWishlistController {
     private final UserWishlistService wishlistService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createUserWishlist(@PathVariable UUID userId, @ResponseBody CreateUserWislistRequest body) {
+    public ResponseEntity<Void> createUserWishlist(@PathVariable UUID userId, @RequestBody CreateUserWishlistRequest body) {
         return new ResponseEntity<>(wishlistService.createUserWishlist(userId, body));
     }
 
