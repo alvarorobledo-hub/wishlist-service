@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -20,6 +17,11 @@ import java.util.UUID;
 public class UserWishlistController {
 
     private final UserWishlistService wishlistService;
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createUserWishlist(@PathVariable UUID userId, @ResponseBody CreateUserWislistRequest body) {
+        return new ResponseEntity<>(wishlistService.createUserWishlist(userId, body));
+    }
 
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistDetailResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
