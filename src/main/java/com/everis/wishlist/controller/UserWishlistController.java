@@ -37,6 +37,12 @@ public class UserWishlistController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{wishlistId}/products/{productId}")
+    public ResponseEntity<Void> deleteUserWishlistProduct(@PathVariable UUID userId, @PathVariable UUID wishlistId, @PathVariable Long productId) {
+        userWishlistService.deleteUserWishlistProduct(userId, wishlistId, productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistDetailResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
         return new ResponseEntity<>(userWishlistService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
