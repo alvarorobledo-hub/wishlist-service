@@ -92,6 +92,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
             deleteWishlistProduct(userId, wishlistId, productId);
 
+            log.info("Checking wishlist size from wishlist ({})", wishlistId);
             final WishlistDetail wishlistDetail = findUserWishlist(userId, wishlistId).getWishlistDetail();
 
             if (wishlistDetail.getProducts().size() == 0) {
@@ -142,28 +143,28 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         }
     }
 
-    private void checkCreateUserWishlistRequest(UUID userId, CreateUserWishlistRequest body) {
+    private void checkCreateUserWishlistRequest(final UUID userId, final CreateUserWishlistRequest body) {
         final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
         userWishlistValidator.validateCreateWishlistRequest(userId, body, wishlists);
     }
 
-    private void checkCanInsertProductOnWishlist(UUID userId, UUID wishlistId, Long productId) {
+    private void checkCanInsertProductOnWishlist(final UUID userId, final UUID wishlistId, final Long productId) {
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
         userWishlistValidator.validateCanInsertProductOnWishlist(wishlist, productId);
     }
 
-    private void checkWishlistOwner(UUID userId, UUID wishlistId) {
+    private void checkWishlistOwner(final UUID userId, final UUID wishlistId) {
         final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
         userWishlistValidator.validateWishlistOwner(userId, wishlistId, wishlists);
     }
 
-    private void deleteWishlist(UUID userId, UUID wishlistId) {
+    private void deleteWishlist(final UUID userId, final UUID wishlistId) {
         log.info("Deleting wishlist ({}) for user ({})", wishlistId, userId);
         userWishlistRepository.deleteUserWishlist(wishlistId);
         log.info("Deleted successfully wishlist ({}) for user ({})", wishlistId, userId);
     }
 
-    private void deleteWishlistProduct(UUID userId, UUID wishlistId, Long productId) {
+    private void deleteWishlistProduct(final UUID userId, final UUID wishlistId, final Long productId) {
         log.info("Deleting product ({}) from wishlist ({}) for user ({})", productId, wishlistId, userId);
         userWishlistRepository.deleteUserWishlistProduct(wishlistId, productId);
         log.info("Deleted successfully product ({}) from wishlist ({}) for user ({})", productId, wishlistId, userId);
