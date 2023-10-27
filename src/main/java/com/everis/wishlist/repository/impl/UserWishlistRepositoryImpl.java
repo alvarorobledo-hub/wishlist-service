@@ -37,6 +37,11 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     }
 
     @Override
+    public void deleteUserWishlist(final UUID userId, final UUID wishlistId) {
+
+    }
+
+    @Override
     public Wishlist findUserWishlist(final UUID userId, final UUID wishlistId) {
         Map<String, Object> params = new HashMap<>();
         params.put("user_id", userId);
