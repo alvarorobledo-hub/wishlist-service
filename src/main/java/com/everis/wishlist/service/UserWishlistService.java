@@ -10,6 +10,7 @@ public interface UserWishlistService {
     void createUserWishlist(UUID userId, UUID wishlistId, CreateUserWishlistRequest body);
     void createUserWishlistProduct(UUID userId, UUID wishlistId, Long productId);
     void deleteUserWishlist(UUID userId, UUID wishlistId);
+    void deleteUserWishlistProduct(UUID userId, UUID wishlistId, Long productId);
     UserWishlistDetailResponse findUserWishlist(UUID userId, UUID wishlistId);
     UserWishlistsResponse findUserWishlists(UUID userId);
 }

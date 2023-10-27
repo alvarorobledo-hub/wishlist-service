@@ -85,6 +85,27 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     }
 
     @Override
+    public void deleteUserWishlistProduct(final UUID userId, final UUID wishlistId, final Long productId) {
+        final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
+        userWishlistValidator.validateWishlistOwner(userId, wishlistId, wishlists);
+
+        try {
+            log.info("Deleting product ({}) from wishlist ({}) for user ({})", productId, wishlistId, userId);
+            userWishlistRepository.deleteUserWishlistProduct(wishlistId, productId);
+            log.info("Deleted successfully product ({}) from wishlist ({}) for user ({})", productId, wishlistId, userId);
+
+            final WishlistDetail wishlistDetail = findUserWishlist(userId, wishlistId).getWishlistDetail();
+
+            if (wishlistDetail.getProducts().size() == 0) {
+                deleteUserWishlist(userId, wishlistId);
+            }
+
+        } catch (final Exception e) {
+            throw new InternalServerException("Something went wrong");
+        }
+    }
+
+    @Override
     public UserWishlistDetailResponse findUserWishlist(final UUID userId, final UUID wishlistId) {
         try {
             log.info("Finding user wishlist with userId ({}) and wishlistId ({})", userId, wishlistId);
