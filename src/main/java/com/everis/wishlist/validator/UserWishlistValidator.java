@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -30,7 +31,7 @@ public class UserWishlistValidator {
         }
 
         if (wishlists.size() >= MAX_WISHLISTS_PER_USER) {
-            throw new MaxWishlistsPerUserException("User %s actually have %s wishlists. Cannot create more", userId, MAX_WISHLISTS_PER_USER);
+            throw new MaxWishlistsPerUserException("User (%s) actually have (%s) wishlists. Cannot create more", userId, MAX_WISHLISTS_PER_USER);
         }
     }
 
@@ -41,7 +42,16 @@ public class UserWishlistValidator {
         }
 
         if (wishlist.getProducts().size() >= MAX_PRODUCTS_PER_WISHLIST) {
-            throw new MaxProductsPerWishlistException("Wishlist %s actually have %s products. Cannot create more", wishlist.getId(), MAX_PRODUCTS_PER_WISHLIST);
+            throw new MaxProductsPerWishlistException("Wishlist (%s) actually have (%s) products. Cannot create more", wishlist.getId(), MAX_PRODUCTS_PER_WISHLIST);
+        }
+    }
+
+    public void validateWishlistOwner(final UUID userId, final UUID wishlistId, final List<Wishlist> wishlists) {
+
+        Optional<Wishlist> optional = wishlists.stream().filter(wishlist -> wishlist.getId().equals(wishlistId)).findAny();
+
+        if (optional.isEmpty()) {
+            throw new BadRequestException("User (%s) is not the owner of the wishlist (%s)", userId, wishlistId);
         }
     }
 }
