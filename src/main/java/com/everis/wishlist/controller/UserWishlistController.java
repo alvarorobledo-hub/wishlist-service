@@ -25,6 +25,12 @@ public class UserWishlistController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/{wishlistId}/products", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createWishlistProduct(@PathVariable UUID userId, @PathVariable UUID wishlistId, @RequestBody CreateWishlistProductRequest body) {
+        wishlistService.createWishlistProduct(userId, wishlistId, body);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistDetailResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
         return new ResponseEntity<>(wishlistService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
