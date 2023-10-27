@@ -78,7 +78,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
         try {
             log.info("Deleting wishlist ({}) for user ({})", wishlistId, userId);
-            userWishlistRepository.deleteUserWishlist(userId, wishlistId);
+            userWishlistRepository.deleteUserWishlist(wishlistId);
             log.info("Deleted successfully wishlist ({}) for user ({})", wishlistId, userId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");

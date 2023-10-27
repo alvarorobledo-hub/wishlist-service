@@ -32,7 +32,7 @@ public class UserWishlistController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/{wishlistId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{wishlistId}")
     public ResponseEntity<Void> deleteUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
         userWishlistService.deleteUserWishlist(userId, wishlistId);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -37,8 +37,11 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     }
 
     @Override
-    public void deleteUserWishlist(final UUID userId, final UUID wishlistId) {
+    public void deleteUserWishlist(final UUID wishlistId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", wishlistId);
 
+        jdbcTemplate.update(load(FILE_DELETE_USER_WISHLIST), params);
     }
 
     @Override
