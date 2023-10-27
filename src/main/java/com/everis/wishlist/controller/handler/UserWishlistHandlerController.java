@@ -1,5 +1,6 @@
 package com.everis.wishlist.controller.handler;
 
+import com.everis.wishlist.exceptions.MaxProductsPerWishlistException;
 import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
 import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.everis.wishlist.exceptions.http.InternalServerException;
@@ -29,6 +30,11 @@ public class UserWishlistHandlerController {
 
     @ExceptionHandler(MaxWishlistsPerUserException.class)
     public ResponseEntity<String> handleMaxWishlistsPerUserException(final MaxWishlistsPerUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MaxProductsPerWishlistException.class)
+    public ResponseEntity<String> handleMaxProductsPerWishlistException(final MaxProductsPerWishlistException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }
