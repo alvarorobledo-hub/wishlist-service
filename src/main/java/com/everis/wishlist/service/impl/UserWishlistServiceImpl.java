@@ -27,6 +27,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserWishlistServiceImpl implements UserWishlistService {
 
+    private static final String MSG_SOMETHING_WENT_WRONG = "Something went wrong";
+
     private final WishlistMapper wishlistMapper;
     private final UserWishlistValidator userWishlistValidator;
     private final UserWishlistRepository userWishlistRepository;
@@ -48,7 +50,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         } catch (final DuplicateKeyException e) {
             throw new BadRequestException("Name (%s) for wishlist already exists", body.getName());
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 

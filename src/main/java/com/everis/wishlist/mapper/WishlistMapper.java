@@ -7,7 +7,7 @@ import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import feign.FeignException.FeignClientException;
+import feign.FeignException.NotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +41,7 @@ public class WishlistMapper {
         try {
             final String response = productApiClient.getProduct(productId);
             return response != null ? getObject(response, new TypeReference<Product>() {}) : null;
-        } catch (final FeignClientException.NotFound | JsonProcessingException e) {
+        } catch (final NotFound | JsonProcessingException e) {
             userWishlistRepository.deleteUserWishlistProduct(wishlist.getId(), productId);
             return null;
         }

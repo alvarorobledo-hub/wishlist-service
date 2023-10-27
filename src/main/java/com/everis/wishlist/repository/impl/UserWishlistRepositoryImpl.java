@@ -18,6 +18,12 @@ import static com.everis.wishlist.utils.FileHelper.load;
 @RequiredArgsConstructor
 public class UserWishlistRepositoryImpl implements UserWishlistRepository {
 
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String PRODUCT_ID = "product_id";
+    private static final String WISHLIST_ID = "wishlist_id";
+    private static final String USER_ID = "user_id";
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
@@ -31,8 +37,8 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     @Override
     public void createWishlistProduct(final UUID wishlistId, final Long productId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("wishlist_id", wishlistId);
-        params.put("product_id", productId);
+        params.put(WISHLIST_ID, wishlistId);
+        params.put(PRODUCT_ID, productId);
 
         jdbcTemplate.update(load(FILE_CREATE_WISHLIST_PRODUCT), params);
     }
@@ -40,7 +46,7 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     @Override
     public void deleteUserWishlist(final UUID wishlistId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", wishlistId);
+        params.put(ID, wishlistId);
 
         jdbcTemplate.update(load(FILE_DELETE_USER_WISHLIST), params);
     }
@@ -48,8 +54,8 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     @Override
     public void deleteUserWishlistProduct(final UUID wishlistId, final Long productId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("wishlist_id", wishlistId);
-        params.put("product_id", productId);
+        params.put(WISHLIST_ID, wishlistId);
+        params.put(PRODUCT_ID, productId);
 
         jdbcTemplate.update(load(FILE_DELETE_USER_WISHLIST_PRODUCT), params);
     }
@@ -57,8 +63,8 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     @Override
     public Wishlist findUserWishlist(final UUID userId, final UUID wishlistId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
-        params.put("wishlist_id", wishlistId);
+        params.put(USER_ID, userId);
+        params.put(WISHLIST_ID, wishlistId);
 
         return jdbcTemplate.queryForObject(load(FILE_FIND_USER_WISHLIST), params, wishlistRowMapper());
     }
@@ -66,7 +72,7 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     @Override
     public List<Wishlist> findUserWishlists(final UUID userId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
+        params.put(USER_ID, userId);
 
         final List<Map<String, Object>> rows = jdbcTemplate.queryForList(load(FILE_FIND_USER_WISHLISTS), params);
         return rows.stream()
@@ -79,16 +85,16 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
 
     private void insertWishlist(final UUID wishlistId, final String name) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", wishlistId);
-        params.put("name", name);
+        params.put(ID, wishlistId);
+        params.put(NAME, name);
 
         jdbcTemplate.update(load(FILE_CREATE_WISHLIST), params);
     }
 
     private void insertUserWishlist(final UUID userId, final UUID wishlistId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
-        params.put("wishlist_id", wishlistId);
+        params.put(USER_ID, userId);
+        params.put(WISHLIST_ID, wishlistId);
 
         jdbcTemplate.update(load(FILE_CREATE_USER_WISHLIST), params);
     }
@@ -96,13 +102,13 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
     private RowMapper<Wishlist> wishlistRowMapper() {
         return (rs, rowNum) -> {
             Wishlist wishlist = Wishlist.builder()
-                    .id(rs.getObject("id", UUID.class))
-                    .name(rs.getString("name"))
+                    .id(rs.getObject(ID, UUID.class))
+                    .name(rs.getString(NAME))
                     .build();
 
             List<Long> productIds = new ArrayList<>();
             do {
-                final Long productId = rs.getLong("product_id");
+                final Long productId = rs.getLong(PRODUCT_ID);
 
                 if (!ObjectUtils.isEmpty(productId)) {
                     productIds.add(productId);
