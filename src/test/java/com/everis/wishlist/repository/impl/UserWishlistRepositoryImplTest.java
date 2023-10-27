@@ -81,6 +81,21 @@ class UserWishlistRepositoryImplTest {
     }
 
     @Test
+    void should_delete_user_wishlist_product() {
+
+        final Map<String, Object> wishlistParams = getWishlistProductParams();
+
+        // GIVEN
+        doReturn(1).when(jdbcTemplate).update(load(FILE_DELETE_USER_WISHLIST_PRODUCT), wishlistParams);
+
+        // WHEN
+        userWishlistRepository.deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+
+        // THEN
+        verify(jdbcTemplate).update(load(FILE_DELETE_USER_WISHLIST_PRODUCT), wishlistParams);
+    }
+
+    @Test
     void should_return_a_user_wishlist() throws JsonProcessingException {
         final Wishlist wishlist = getWishlist();
         final Map<String, Object> params = getUserWishlistParams();
@@ -141,7 +156,7 @@ class UserWishlistRepositoryImplTest {
     private Map<String, Object> getWishlistProductParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("wishlist_id", WISHLIST_ID);
-        params.put("product_id", 1L);
+        params.put("product_id", PRODUCT_ID);
 
         return params;
     }
