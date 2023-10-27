@@ -35,7 +35,7 @@ class UserWishlistRepositoryImplTest {
     void should_create_user_wishlist() throws JsonProcessingException {
 
         final CreateUserWishlistRequest body = getCreateUserWishlistRequest();
-        final Map<String, Object> wishlistParams = getWishlistParams();
+        final Map<String, Object> wishlistParams = getWishlistNameParams();
         final Map<String, Object> userWishlistParams = getUserWishlistParams();
 
         // GIVEN
@@ -63,6 +63,21 @@ class UserWishlistRepositoryImplTest {
 
         // THEN
         verify(jdbcTemplate).update(load(FILE_CREATE_WISHLIST_PRODUCT), params);
+    }
+
+    @Test
+    void should_delete_user_wishlist() {
+
+        final Map<String, Object> wishlistParams = getWishlistParams();
+
+        // GIVEN
+        doReturn(1).when(jdbcTemplate).update(load(FILE_DELETE_USER_WISHLIST), wishlistParams);
+
+        // WHEN
+        userWishlistRepository.deleteUserWishlist(WISHLIST_ID);
+
+        // THEN
+        verify(jdbcTemplate).update(load(FILE_DELETE_USER_WISHLIST), wishlistParams);
     }
 
     @Test
@@ -101,6 +116,13 @@ class UserWishlistRepositoryImplTest {
     }
 
     private Map<String, Object> getWishlistParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", WISHLIST_ID);
+
+        return params;
+    }
+
+    private Map<String, Object> getWishlistNameParams() {
         Map<String, Object> params = new HashMap<>();
         params.put("id", WISHLIST_ID);
         params.put("name", WISHLIST_NAME);

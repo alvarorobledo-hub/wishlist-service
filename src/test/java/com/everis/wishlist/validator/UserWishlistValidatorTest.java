@@ -87,7 +87,7 @@ class UserWishlistValidatorTest {
 
         // THEN
         assertAll("Exception should be:",
-                () -> assertEquals(format("User %s actually have %s wishlists. Cannot create more", USER_ID, 5), exception.getMessage()));
+                () -> assertEquals(format("User (%s) actually have (%s) wishlists. Cannot create more", USER_ID, 5), exception.getMessage()));
     }
 
     @Test
@@ -134,7 +134,7 @@ class UserWishlistValidatorTest {
 
         // THEN
         assertAll("Exception should be:",
-                () -> assertEquals(format("Wishlist %s actually have %s products. Cannot create more", wishlistDetail.getId(), 25), exception.getMessage()));
+                () -> assertEquals(format("Wishlist (%s) actually have (%s) products. Cannot create more", wishlistDetail.getId(), 25), exception.getMessage()));
     }
 
 }
