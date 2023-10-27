@@ -49,7 +49,7 @@ class WishlistServiceImplTest {
 
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
-        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doNothing().when(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         doNothing().when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
 
@@ -58,7 +58,7 @@ class WishlistServiceImplTest {
 
         // THEN
         verify(userWishlistRepository).findUserWishlists(USER_ID);
-        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
@@ -71,7 +71,7 @@ class WishlistServiceImplTest {
 
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
-        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doNothing().when(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         doThrow(new DuplicateKeyException("Key is duplicated")).when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
 
         // WHEN
@@ -82,7 +82,7 @@ class WishlistServiceImplTest {
         assertAll("Exception should be:",
                 () -> assertEquals(format("Name (%s) for wishlist already exists", body.getName()), exception.getMessage()));
         verify(userWishlistRepository).findUserWishlists(USER_ID);
-        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository, never()).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
@@ -95,7 +95,7 @@ class WishlistServiceImplTest {
 
         // GIVEN
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
-        doNothing().when(userWishlistValidator).validate(USER_ID, body, wishlists);
+        doNothing().when(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         doNothing().when(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
 
@@ -107,7 +107,7 @@ class WishlistServiceImplTest {
         assertAll("Exception should be:",
                 () -> assertEquals("Something went wrong", exception.getMessage()));
         verify(userWishlistRepository).findUserWishlists(USER_ID);
-        verify(userWishlistValidator).validate(USER_ID, body, wishlists);
+        verify(userWishlistValidator).validateCreateWishlistRequest(USER_ID, body, wishlists);
         verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
     }
@@ -121,7 +121,7 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
-        doNothing().when(userWishlistValidator).validate(wishlistDetail, PRODUCT_ID);
+        doNothing().when(userWishlistValidator).validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID);
         doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, PRODUCT_ID);
 
         // WHEN
@@ -130,7 +130,7 @@ class WishlistServiceImplTest {
         // THEN
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         verify(wishlistMapper).from(wishlist);
-        verify(userWishlistValidator).validate(wishlistDetail, PRODUCT_ID);
+        verify(userWishlistValidator).validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID);
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, PRODUCT_ID);
     }
 
@@ -142,7 +142,7 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
-        doNothing().when(userWishlistValidator).validate(wishlistDetail, PRODUCT_ID);
+        doNothing().when(userWishlistValidator).validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID);
         doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, PRODUCT_ID);
 
         // WHEN
@@ -154,7 +154,7 @@ class WishlistServiceImplTest {
                 () -> assertEquals("Something went wrong", exception.getMessage()));
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         verify(wishlistMapper).from(wishlist);
-        verify(userWishlistValidator).validate(wishlistDetail, PRODUCT_ID);
+        verify(userWishlistValidator).validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID);
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, PRODUCT_ID);
     }
 

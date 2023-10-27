@@ -34,7 +34,7 @@ class UserWishlistValidatorTest {
         final List<Wishlist> wishlists = getWishlists();
 
         // WHEN
-        userWishlistValidator.validate(USER_ID, request, wishlists);
+        userWishlistValidator.validateCreateWishlistRequest(USER_ID, request, wishlists);
     }
 
     @Test
@@ -47,7 +47,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final BadRequestException exception = assertThrows(BadRequestException.class,
-                () -> userWishlistValidator.validate(USER_ID, request, wishlists));
+                () -> userWishlistValidator.validateCreateWishlistRequest(USER_ID, request, wishlists));
 
         // THEN
         assertAll("Exception should be:",
@@ -64,7 +64,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final BadRequestException exception = assertThrows(BadRequestException.class,
-                () -> userWishlistValidator.validate(USER_ID, request, wishlists));
+                () -> userWishlistValidator.validateCreateWishlistRequest(USER_ID, request, wishlists));
 
         // THEN
         assertAll("Exception should be:",
@@ -82,7 +82,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final MaxWishlistsPerUserException exception = assertThrows(MaxWishlistsPerUserException.class,
-                () -> userWishlistValidator.validate(USER_ID, request, wishlists));
+                () -> userWishlistValidator.validateCreateWishlistRequest(USER_ID, request, wishlists));
 
         // THEN
         assertAll("Exception should be:",
@@ -95,7 +95,7 @@ class UserWishlistValidatorTest {
         final WishlistDetail wishlistDetail = getWishlistDetail();
 
         // WHEN
-        userWishlistValidator.validate(wishlistDetail, PRODUCT_ID);
+        userWishlistValidator.validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID);
     }
 
     @Test
@@ -104,7 +104,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final BadRequestException exception = assertThrows(BadRequestException.class,
-                () -> userWishlistValidator.validate(wishlistDetail, null));
+                () -> userWishlistValidator.validateCanInsertProductOnWishlist(wishlistDetail, null));
 
         // THEN
         assertAll("Exception should be:",
@@ -123,7 +123,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final MaxProductsPerWishlistException exception = assertThrows(MaxProductsPerWishlistException.class,
-                () -> userWishlistValidator.validate(wishlistDetail, PRODUCT_ID));
+                () -> userWishlistValidator.validateCanInsertProductOnWishlist(wishlistDetail, PRODUCT_ID));
 
         // THEN
         assertAll("Exception should be:",

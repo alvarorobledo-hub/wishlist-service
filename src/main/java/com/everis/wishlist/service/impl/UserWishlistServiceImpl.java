@@ -36,7 +36,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     public void createUserWishlist(final UUID userId, final UUID wishlistId, final CreateUserWishlistRequest body) {
         final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
 
-        userWishlistValidator.validate(userId, body, wishlists);
+        userWishlistValidator.validateCreateWishlistRequest(userId, body, wishlists);
 
         try {
             log.info("Creating wishlist for user ({})", userId);
@@ -59,7 +59,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     @Override
     public void createUserWishlistProduct(final UUID userId, final UUID wishlistId, final Long productId) {
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
-        userWishlistValidator.validate(wishlist, productId);
+        userWishlistValidator.validateCanInsertProductOnWishlist(wishlist, productId);
 
         try {
             log.info("Creating wishlist ({}) for user ({})", wishlistId, userId);

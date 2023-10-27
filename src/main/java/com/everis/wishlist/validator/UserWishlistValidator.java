@@ -19,7 +19,7 @@ public class UserWishlistValidator {
     private static final Integer MAX_WISHLISTS_PER_USER = 5;
     private static final Integer MAX_PRODUCTS_PER_WISHLIST = 25;
 
-    public void validate(final UUID userId, final CreateUserWishlistRequest body, final List<Wishlist> wishlists) {
+    public void validateCreateWishlistRequest(final UUID userId, final CreateUserWishlistRequest body, final List<Wishlist> wishlists) {
 
         if (ObjectUtils.isEmpty(body.getName())) {
             throw new BadRequestException("Wishlist name must not be void");
@@ -34,7 +34,7 @@ public class UserWishlistValidator {
         }
     }
 
-    public void validate(final WishlistDetail wishlist, final Long productId) {
+    public void validateCanInsertProductOnWishlist(final WishlistDetail wishlist, final Long productId) {
 
         if (productId == null) {
             throw new BadRequestException("ProductId must not be null");
