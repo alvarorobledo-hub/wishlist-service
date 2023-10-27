@@ -65,7 +65,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
             userWishlistRepository.createWishlistProduct(wishlistId, productId);
             log.info("Created product with id ({}) for wishlist ({})", productId, wishlistId);
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 
@@ -78,7 +78,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         try {
             deleteWishlist(userId, wishlistId);
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 
@@ -100,7 +100,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
             }
 
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 
@@ -121,7 +121,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         } catch (final EmptyResultDataAccessException e) {
             throw new UserWishlistNotFoundException("Wishlist with userId (%s) and wishlistId (%s) does not exists", userId, wishlistId);
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 
@@ -139,7 +139,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
                     .build();
 
         } catch (final Exception e) {
-            throw new InternalServerException("Something went wrong");
+            throw new InternalServerException(MSG_SOMETHING_WENT_WRONG);
         }
     }
 
