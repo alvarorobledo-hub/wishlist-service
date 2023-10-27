@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
+import static com.everis.wishlist.constants.WishlistServiceConstants.WISHLIST_ID;
 import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,6 +136,31 @@ class UserWishlistValidatorTest {
         // THEN
         assertAll("Exception should be:",
                 () -> assertEquals(format("Wishlist (%s) actually have (%s) products. Cannot create more", wishlistDetail.getId(), 25), exception.getMessage()));
+    }
+
+    @Test
+    void should_request_is_ok_on_validate_user_wishlist_owner() throws JsonProcessingException {
+
+        final List<Wishlist> wishlist = getWishlists();
+
+        // WHEN
+        userWishlistValidator.validateWishlistOwner(USER_ID, WISHLIST_ID, wishlist);
+    }
+
+    @Test
+    void should_request_throw_error_if_user_wishlist_is_not_owner_on_validate_user_wishlist_owner() throws JsonProcessingException {
+        final List<Wishlist> wishlist = getWishlists();
+
+        // GIVEN
+        wishlist.clear();
+
+        // WHEN
+        final BadRequestException exception = assertThrows(BadRequestException.class,
+                () -> userWishlistValidator.validateWishlistOwner(USER_ID, WISHLIST_ID, wishlist));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(format("User (%s) is not the owner of the wishlist (%s)", USER_ID, WISHLIST_ID), exception.getMessage()));
     }
 
 }
