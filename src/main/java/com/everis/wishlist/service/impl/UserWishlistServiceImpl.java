@@ -41,9 +41,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
             log.info("Creating wishlist for user ({})", userId);
 
             userWishlistRepository.createWishlist(userId, wishlistId, body.getName());
-            for (Long productId : body.getProductIds()) {
-                userWishlistRepository.createWishlistProduct(wishlistId, productId);
-            }
+            body.getProductIds().forEach(productId -> userWishlistRepository.createWishlistProduct(wishlistId, productId));
 
             log.info("User wishlist with id ({}) created successfully", wishlistId);
 
@@ -105,8 +103,10 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
     @Override
     public UserWishlistDetailResponse findUserWishlist(final UUID userId, final UUID wishlistId) {
+
+        log.info("Finding user wishlist with userId ({}) and wishlistId ({})", userId, wishlistId);
+
         try {
-            log.info("Finding user wishlist with userId ({}) and wishlistId ({})", userId, wishlistId);
             final Wishlist wishlist = userWishlistRepository.findUserWishlist(userId, wishlistId);
             final WishlistDetail wishlistDetail = wishlistMapper.from(wishlist);
             log.info("Found user wishlist with wishlistId ({}) and name ({})", wishlistId, wishlist.getName());
@@ -124,8 +124,10 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
     @Override
     public UserWishlistsResponse findUserWishlists(final UUID userId) {
+
+        log.info("Finding user wishlists with userId ({})", userId);
+
         try {
-            log.info("Finding user wishlists with userId ({})", userId);
             final List<Wishlist> wishlists = userWishlistRepository.findUserWishlists(userId);
             log.info("Found a total of ({}) wishlists for userId ({})", wishlists.size(), userId);
 

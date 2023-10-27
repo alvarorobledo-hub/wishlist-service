@@ -117,9 +117,7 @@ class UserWishlistValidatorTest {
         final Product product = getProduct(5);
 
         // GIVEN
-        for(int i = 0; i < 22; i++) {
-            wishlistDetail.getProducts().add(product);
-        }
+        wishlistDetail.getProducts().addAll(Collections.nCopies(25, product));
 
         // WHEN
         final MaxProductsPerWishlistException exception = assertThrows(MaxProductsPerWishlistException.class,

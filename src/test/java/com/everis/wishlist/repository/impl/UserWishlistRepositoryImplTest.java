@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.*;
 import static com.everis.wishlist.mock.WishlistServiceMock.*;
@@ -59,7 +60,7 @@ class UserWishlistRepositoryImplTest {
         doReturn(1).when(jdbcTemplate).update(load(FILE_CREATE_WISHLIST_PRODUCT), params);
 
         // WHEN
-        userWishlistRepository.createWishlistProduct(WISHLIST_ID, 1L);
+        userWishlistRepository.createWishlistProduct(WISHLIST_ID, PRODUCT_ID);
 
         // THEN
         verify(jdbcTemplate).update(load(FILE_CREATE_WISHLIST_PRODUCT), params);
@@ -169,17 +170,14 @@ class UserWishlistRepositoryImplTest {
     }
 
     private List<Map<String, Object>> getWishlistsMap(final List<Wishlist> wishlists) {
-        final List<Map<String, Object>> wishlistsMap = new ArrayList<>();
-
-        for(Wishlist wishlist : wishlists) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("ID", wishlist.getId());
-            map.put("NAME", wishlist.getName());
-
-            wishlistsMap.add(map);
-        }
-
-        return wishlistsMap;
+        return wishlists.stream()
+                .map(wishlist -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("ID", wishlist.getId());
+                    map.put("NAME", wishlist.getName());
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 
 }

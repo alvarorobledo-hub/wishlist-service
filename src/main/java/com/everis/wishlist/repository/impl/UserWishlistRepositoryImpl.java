@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.everis.wishlist.constants.SQLFileConstants.*;
 import static com.everis.wishlist.utils.FileHelper.load;
@@ -68,17 +69,12 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
         params.put("user_id", userId);
 
         final List<Map<String, Object>> rows = jdbcTemplate.queryForList(load(FILE_FIND_USER_WISHLISTS), params);
-        List<Wishlist> wishlists = new ArrayList<>();
-
-        for(Map<String, Object> row : rows) {
-            Wishlist wishlist = Wishlist.builder()
-                    .id((UUID) row.get("ID"))
-                    .name((String) row.get("NAME"))
-                    .build();
-            wishlists.add(wishlist);
-        }
-
-        return wishlists;
+        return rows.stream()
+                .map(row -> Wishlist.builder()
+                        .id((UUID) row.get("ID"))
+                        .name((String) row.get("NAME"))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private void insertWishlist(final UUID wishlistId, final String name) {
