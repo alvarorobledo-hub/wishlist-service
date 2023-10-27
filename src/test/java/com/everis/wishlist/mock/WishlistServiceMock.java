@@ -8,7 +8,6 @@ import com.everis.wishlist.entity.WishlistDetail;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static com.everis.wishlist.utils.FileHelper.load;
@@ -16,8 +15,12 @@ import static com.everis.wishlist.utils.ObjectMapperHelper.getObject;
 
 public class WishlistServiceMock {
 
-    public static String getProduct(final Integer id) {
+    public static String getStringProduct(final Integer id) {
         return load("/products/product" + id + ".json");
+    }
+
+    public static Product getProduct(final Integer id) throws JsonProcessingException {
+        return getObject(load("/products/product" + id + ".json"), new TypeReference<Product>() {});
     }
 
     public static Wishlist getWishlist() throws JsonProcessingException {

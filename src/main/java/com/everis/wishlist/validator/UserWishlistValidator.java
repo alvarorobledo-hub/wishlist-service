@@ -34,14 +34,14 @@ public class UserWishlistValidator {
         }
     }
 
-    public void validate(final UUID userId, final WishlistDetail wishlist, final CreateWishlistProductRequest body) {
+    public void validate(final WishlistDetail wishlist, final CreateWishlistProductRequest body) {
 
         if (body.getProductId() == null) {
             throw new BadRequestException("ProductId must not be null");
         }
 
         if (wishlist.getProducts().size() >= MAX_PRODUCTS_PER_WISHLIST) {
-            throw new MaxProductsPerWishlistException("Wishlist %s actually have %s products. Cannot create more", userId, MAX_PRODUCTS_PER_WISHLIST);
+            throw new MaxProductsPerWishlistException("Wishlist %s actually have %s products. Cannot create more", wishlist.getId(), MAX_PRODUCTS_PER_WISHLIST);
         }
     }
 }

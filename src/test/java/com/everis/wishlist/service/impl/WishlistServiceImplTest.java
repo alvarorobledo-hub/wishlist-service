@@ -124,7 +124,7 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
-        doNothing().when(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        doNothing().when(userWishlistValidator).validate(wishlistDetail, body);
         doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
 
         // WHEN
@@ -133,7 +133,7 @@ class WishlistServiceImplTest {
         // THEN
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         verify(wishlistMapper).from(wishlist);
-        verify(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        verify(userWishlistValidator).validate(wishlistDetail, body);
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
     }
 
@@ -146,7 +146,7 @@ class WishlistServiceImplTest {
         // GIVEN
         doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
-        doNothing().when(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        doNothing().when(userWishlistValidator).validate(wishlistDetail, body);
         doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
 
         // WHEN
@@ -158,7 +158,7 @@ class WishlistServiceImplTest {
                 () -> assertEquals("Something went wrong", exception.getMessage()));
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
         verify(wishlistMapper).from(wishlist);
-        verify(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        verify(userWishlistValidator).validate(wishlistDetail, body);
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
     }
 

@@ -63,7 +63,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         log.info("Creating wishlist for user ({})", userId);
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
 
-        userWishlistValidator.validate(userId, wishlist, body);
+        userWishlistValidator.validate(wishlist, body);
 
         try {
             userWishlistRepository.createWishlistProduct(wishlistId, body.getProductId());

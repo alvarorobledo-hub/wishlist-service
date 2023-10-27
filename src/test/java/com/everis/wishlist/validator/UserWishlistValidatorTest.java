@@ -1,7 +1,11 @@
 package com.everis.wishlist.validator;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
+import com.everis.wishlist.entity.Product;
 import com.everis.wishlist.entity.Wishlist;
+import com.everis.wishlist.entity.WishlistDetail;
+import com.everis.wishlist.exceptions.MaxProductsPerWishlistException;
 import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
 import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,8 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
-import static com.everis.wishlist.mock.WishlistServiceMock.getCreateUserWishlistRequest;
-import static com.everis.wishlist.mock.WishlistServiceMock.getWishlists;
+import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,6 +88,53 @@ class UserWishlistValidatorTest {
         // THEN
         assertAll("Exception should be:",
                 () -> assertEquals(format("User %s actually have %s wishlists. Cannot create more", USER_ID, 5), exception.getMessage()));
+    }
+
+    @Test
+    void should_request_is_ok_on_validate_create_wishlist_product() throws JsonProcessingException {
+
+        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // WHEN
+        userWishlistValidator.validate(wishlistDetail, request);
+    }
+
+    @Test
+    void should_request_throw_error_if_product_id_is_null_on_validate_create_wishlist_product() throws JsonProcessingException {
+        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // GIVEN
+        request.setProductId(null);
+
+        // WHEN
+        final BadRequestException exception = assertThrows(BadRequestException.class,
+                () -> userWishlistValidator.validate(wishlistDetail, request));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("ProductId must not be null", exception.getMessage()));
+    }
+
+    @Test
+    void should_request_throw_error_if_wishlist_products_size_is_twenty_five_or_more_on_validate_create_wishlist_product() throws JsonProcessingException {
+        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+        final Product product = getProduct(5);
+
+        // GIVEN
+        for(int i = 0; i < 22; i++) {
+            wishlistDetail.getProducts().add(product);
+        }
+
+        // WHEN
+        final MaxProductsPerWishlistException exception = assertThrows(MaxProductsPerWishlistException.class,
+                () -> userWishlistValidator.validate(wishlistDetail, request));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(format("Wishlist %s actually have %s products. Cannot create more", wishlistDetail.getId(), 25), exception.getMessage()));
     }
 
 }

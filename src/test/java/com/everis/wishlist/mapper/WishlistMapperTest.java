@@ -30,9 +30,9 @@ class WishlistMapperTest {
         final WishlistDetail wishlistDetail = getWishlistDetail();
 
         // GIVEN
-        doReturn(getProduct(4)).when(productApiClient).getProduct(4L);
-        doReturn(getProduct(5)).when(productApiClient).getProduct(5L);
-        doReturn(getProduct(6)).when(productApiClient).getProduct(6L);
+        doReturn(getStringProduct(4)).when(productApiClient).getProduct(4L);
+        doReturn(getStringProduct(5)).when(productApiClient).getProduct(5L);
+        doReturn(getStringProduct(6)).when(productApiClient).getProduct(6L);
 
         // WHEN
         final WishlistDetail response = wishlistMapper.from(wishlist);
