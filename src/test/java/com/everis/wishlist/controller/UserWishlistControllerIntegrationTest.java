@@ -1,6 +1,7 @@
 package com.everis.wishlist.controller;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
@@ -43,6 +44,20 @@ class UserWishlistControllerIntegrationTest {
 
         // WHEN, THEN
         mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}", USER_ID, WISHLIST_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getString(body)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void should_endpoint_create_wishlist_product() throws Exception {
+        final CreateWishlistProductRequest body = getCreateWishlistProductRequest();
+
+        // GIVEN
+        doNothing().when(userWishlistService).createWishlistProduct(USER_ID, WISHLIST_ID, body);
+
+        // WHEN, THEN
+        mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}/products", USER_ID, WISHLIST_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getString(body)))
                 .andExpect(status().isCreated());

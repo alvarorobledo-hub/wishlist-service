@@ -1,6 +1,7 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
@@ -111,6 +112,54 @@ class WishlistServiceImplTest {
         verify(userWishlistValidator).validate(USER_ID, body, wishlists);
         verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
         verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductIds().get(0));
+    }
+
+    @Test
+    void should_create_a_wishlist_product() throws JsonProcessingException {
+
+        final CreateWishlistProductRequest body = getCreateWishlistProductRequest();
+        final Wishlist wishlist = getWishlist();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // GIVEN
+        doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
+        doNothing().when(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
+
+        // WHEN
+        userWishlistService.createWishlistProduct(USER_ID, WISHLIST_ID, body);
+
+        // THEN
+        verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        verify(wishlistMapper).from(wishlist);
+        verify(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
+    }
+
+    @Test
+    void should_throw_error_if_something_went_wrong_on_create_a_wishlist_product() throws JsonProcessingException {
+        final CreateWishlistProductRequest body = getCreateWishlistProductRequest();
+        final Wishlist wishlist = getWishlist();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // GIVEN
+        doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
+        doNothing().when(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        doThrow(new RuntimeException()).when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
+
+        // WHEN
+        final InternalServerException exception = assertThrows(InternalServerException.class,
+                () -> userWishlistService.createWishlistProduct(USER_ID, WISHLIST_ID, body));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("Something went wrong", exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        verify(wishlistMapper).from(wishlist);
+        verify(userWishlistValidator).validate(USER_ID, wishlistDetail, body);
+        verify(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
     }
 
     @Test
