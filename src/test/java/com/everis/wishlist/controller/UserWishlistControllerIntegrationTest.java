@@ -22,8 +22,7 @@ import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static com.everis.wishlist.utils.ObjectMapperHelper.getString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -61,6 +60,17 @@ class UserWishlistControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getString(body)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void should_endpoint_delete_user_wishlist() throws Exception {
+        // GIVEN
+        doNothing().when(userWishlistService).deleteUserWishlist(USER_ID, WISHLIST_ID);
+
+        // WHEN, THEN
+        mockMvc.perform(delete("/api/v1/users/{userId}/wishlists/{wishlistId}", USER_ID, WISHLIST_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
