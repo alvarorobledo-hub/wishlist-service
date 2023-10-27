@@ -1,7 +1,6 @@
 package com.everis.wishlist.controller;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
-import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
@@ -16,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
-import static com.everis.wishlist.constants.WishlistServiceConstants.WISHLIST_ID;
+import static com.everis.wishlist.constants.WishlistServiceConstants.*;
 import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static com.everis.wishlist.utils.ObjectMapperHelper.getString;
 import static org.mockito.BDDMockito.given;
@@ -50,15 +48,13 @@ class UserWishlistControllerIntegrationTest {
 
     @Test
     void should_endpoint_create_wishlist_product() throws Exception {
-        final CreateWishlistProductRequest body = getCreateWishlistProductRequest();
 
         // GIVEN
-        doNothing().when(userWishlistService).createUserWishlistProduct(USER_ID, WISHLIST_ID, body);
+        doNothing().when(userWishlistService).createUserWishlistProduct(USER_ID, WISHLIST_ID, PRODUCT_ID);
 
         // WHEN, THEN
-        mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}/products", USER_ID, WISHLIST_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getString(body)))
+        mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}/products/{productId}", USER_ID, WISHLIST_ID, PRODUCT_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 

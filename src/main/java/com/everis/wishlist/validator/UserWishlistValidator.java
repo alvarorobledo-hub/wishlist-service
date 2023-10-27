@@ -1,7 +1,6 @@
 package com.everis.wishlist.validator;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
-import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
 import com.everis.wishlist.exceptions.MaxProductsPerWishlistException;
@@ -35,9 +34,9 @@ public class UserWishlistValidator {
         }
     }
 
-    public void validate(final WishlistDetail wishlist, final CreateWishlistProductRequest body) {
+    public void validate(final WishlistDetail wishlist, final Long productId) {
 
-        if (body.getProductId() == null) {
+        if (productId == null) {
             throw new BadRequestException("ProductId must not be null");
         }
 

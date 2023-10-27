@@ -1,14 +1,13 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
-import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
+import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.everis.wishlist.exceptions.http.InternalServerException;
-import com.everis.wishlist.exceptions.UserWishlistNotFoundException;
 import com.everis.wishlist.mapper.WishlistMapper;
 import com.everis.wishlist.repository.UserWishlistRepository;
 import com.everis.wishlist.service.UserWishlistService;
@@ -57,14 +56,14 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     }
 
     @Override
-    public void createUserWishlistProduct(final UUID userId, final UUID wishlistId, final CreateWishlistProductRequest body) {
+    public void createUserWishlistProduct(final UUID userId, final UUID wishlistId, final Long productId) {
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
-        userWishlistValidator.validate(wishlist, body);
+        userWishlistValidator.validate(wishlist, productId);
 
         try {
             log.info("Creating wishlist ({}) for user ({})", wishlistId, userId);
-            userWishlistRepository.createWishlistProduct(wishlistId, body.getProductId());
-            log.info("Created product with id ({}) for wishlist ({})", body.getProductId(), wishlist.getId());
+            userWishlistRepository.createWishlistProduct(wishlistId, productId);
+            log.info("Created product with id ({}) for wishlist ({})", productId, wishlistId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }

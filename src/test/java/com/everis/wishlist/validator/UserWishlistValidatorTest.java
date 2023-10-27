@@ -1,7 +1,6 @@
 package com.everis.wishlist.validator;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
-import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.entity.Product;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
@@ -17,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static com.everis.wishlist.constants.WishlistServiceConstants.USER_ID;
-import static com.everis.wishlist.constants.WishlistServiceConstants.WISHLIST_ID;
+import static com.everis.wishlist.constants.WishlistServiceConstants.*;
 import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,24 +92,19 @@ class UserWishlistValidatorTest {
     @Test
     void should_request_is_ok_on_validate_create_wishlist_product() throws JsonProcessingException {
 
-        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
         final WishlistDetail wishlistDetail = getWishlistDetail();
 
         // WHEN
-        userWishlistValidator.validate(wishlistDetail, request);
+        userWishlistValidator.validate(wishlistDetail, PRODUCT_ID);
     }
 
     @Test
     void should_request_throw_error_if_product_id_is_null_on_validate_create_wishlist_product() throws JsonProcessingException {
-        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
         final WishlistDetail wishlistDetail = getWishlistDetail();
-
-        // GIVEN
-        request.setProductId(null);
 
         // WHEN
         final BadRequestException exception = assertThrows(BadRequestException.class,
-                () -> userWishlistValidator.validate(wishlistDetail, request));
+                () -> userWishlistValidator.validate(wishlistDetail, null));
 
         // THEN
         assertAll("Exception should be:",
@@ -120,7 +113,6 @@ class UserWishlistValidatorTest {
 
     @Test
     void should_request_throw_error_if_wishlist_products_size_is_twenty_five_or_more_on_validate_create_wishlist_product() throws JsonProcessingException {
-        final CreateWishlistProductRequest request = getCreateWishlistProductRequest();
         final WishlistDetail wishlistDetail = getWishlistDetail();
         final Product product = getProduct(5);
 
@@ -131,7 +123,7 @@ class UserWishlistValidatorTest {
 
         // WHEN
         final MaxProductsPerWishlistException exception = assertThrows(MaxProductsPerWishlistException.class,
-                () -> userWishlistValidator.validate(wishlistDetail, request));
+                () -> userWishlistValidator.validate(wishlistDetail, PRODUCT_ID));
 
         // THEN
         assertAll("Exception should be:",

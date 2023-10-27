@@ -1,7 +1,6 @@
 package com.everis.wishlist.mock;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
-import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.entity.Product;
 import com.everis.wishlist.entity.Wishlist;
 import com.everis.wishlist.entity.WishlistDetail;
@@ -37,9 +36,5 @@ public class WishlistServiceMock {
 
     public static CreateUserWishlistRequest getCreateUserWishlistRequest() throws JsonProcessingException {
         return getObject(load("/requests/create_user_wishlist.json"), new TypeReference<CreateUserWishlistRequest>() {});
-    }
-
-    public static CreateWishlistProductRequest getCreateWishlistProductRequest() throws JsonProcessingException {
-        return getObject(load("/requests/create_wishlist_product.json"), new TypeReference<CreateWishlistProductRequest>() {});
     }
 }
