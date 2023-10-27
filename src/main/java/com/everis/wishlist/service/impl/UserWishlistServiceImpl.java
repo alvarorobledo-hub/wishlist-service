@@ -34,9 +34,8 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     @Transactional
     @Override
     public void createUserWishlist(final UUID userId, final UUID wishlistId, final CreateUserWishlistRequest body) {
-        final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
 
-        userWishlistValidator.validateCreateWishlistRequest(userId, body, wishlists);
+        checkCreateUserWishlistRequest(userId, body);
 
         try {
             log.info("Creating wishlist for user ({})", userId);
@@ -58,8 +57,8 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     @Transactional
     @Override
     public void createUserWishlistProduct(final UUID userId, final UUID wishlistId, final Long productId) {
-        final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
-        userWishlistValidator.validateCanInsertProductOnWishlist(wishlist, productId);
+
+        checkCanInsertProductOnWishlist(userId, wishlistId, productId);
 
         try {
             log.info("Creating wishlist ({}) for user ({})", wishlistId, userId);
@@ -137,6 +136,16 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
+    }
+
+    private void checkCreateUserWishlistRequest(UUID userId, CreateUserWishlistRequest body) {
+        final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
+        userWishlistValidator.validateCreateWishlistRequest(userId, body, wishlists);
+    }
+
+    private void checkCanInsertProductOnWishlist(UUID userId, UUID wishlistId, Long productId) {
+        final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
+        userWishlistValidator.validateCanInsertProductOnWishlist(wishlist, productId);
     }
 
     private void checkWishlistOwner(UUID userId, UUID wishlistId) {

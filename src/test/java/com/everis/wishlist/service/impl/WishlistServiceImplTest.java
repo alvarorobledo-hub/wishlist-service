@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.*;
@@ -195,6 +196,84 @@ class WishlistServiceImplTest {
         verify(userWishlistRepository).findUserWishlists(USER_ID);
         verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
         verify(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+    }
+
+    @Test
+    void should_delete_a_user_wishlist_product() throws JsonProcessingException {
+        final List<Wishlist> wishlists = getWishlists();
+        final Wishlist wishlist = getWishlist();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        doNothing().when(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+        doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
+
+        // WHEN
+        userWishlistService.deleteUserWishlistProduct(USER_ID, WISHLIST_ID, PRODUCT_ID);
+
+        // THEN
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        verify(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+        verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        verify(wishlistMapper).from(wishlist);
+        verify(userWishlistRepository, never()).deleteUserWishlist(WISHLIST_ID);
+    }
+
+    @Test
+    void should_delete_a_user_wishlist_product_and_wishlist() throws JsonProcessingException {
+        final List<Wishlist> wishlists = getWishlists();
+        final Wishlist wishlist = getWishlist();
+        final WishlistDetail wishlistDetail = getWishlistDetail();
+
+        // GIVEN
+        wishlist.setProductIds(Collections.emptyList());
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        doNothing().when(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+        doReturn(wishlist).when(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        doReturn(wishlistDetail).when(wishlistMapper).from(wishlist);
+        doNothing().when(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+
+        // WHEN
+        userWishlistService.deleteUserWishlistProduct(USER_ID, WISHLIST_ID, PRODUCT_ID);
+
+        // THEN
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        verify(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+        verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
+        verify(wishlistMapper).from(wishlist);
+        verify(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+    }
+
+    @Test
+    void should_throw_error_if_something_went_wrong_on_delete_a_user_wishlist_product() throws JsonProcessingException {
+
+        final List<Wishlist> wishlists = getWishlists();
+        final Wishlist wishlist = getWishlist();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        doThrow(new RuntimeException()).when(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+
+        // WHEN
+        final InternalServerException exception = assertThrows(InternalServerException.class,
+                () -> userWishlistService.deleteUserWishlistProduct(USER_ID, WISHLIST_ID, PRODUCT_ID));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("Something went wrong", exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        verify(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
+        verify(userWishlistRepository, never()).findUserWishlist(USER_ID, WISHLIST_ID);
+        verify(wishlistMapper, never()).from(wishlist);
+        verify(userWishlistRepository, never()).deleteUserWishlist(WISHLIST_ID);
     }
 
     @Test
