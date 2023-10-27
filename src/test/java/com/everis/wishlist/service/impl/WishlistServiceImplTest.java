@@ -163,6 +163,45 @@ class WishlistServiceImplTest {
     }
 
     @Test
+    void should_delete_a_user_wishlist() throws JsonProcessingException {
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        doNothing().when(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+
+        // WHEN
+        userWishlistService.deleteUserWishlist(USER_ID, WISHLIST_ID);
+
+        // THEN
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        verify(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+    }
+
+    @Test
+    void should_throw_error_if_something_went_wrong_on_delete_a_user_wishlist() throws JsonProcessingException {
+        final List<Wishlist> wishlists = getWishlists();
+
+        // GIVEN
+        doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
+        doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        doThrow(new RuntimeException()).when(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+
+        // WHEN
+        final InternalServerException exception = assertThrows(InternalServerException.class,
+                () -> userWishlistService.deleteUserWishlist(USER_ID, WISHLIST_ID));
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals("Something went wrong", exception.getMessage()));
+        verify(userWishlistRepository).findUserWishlists(USER_ID);
+        verify(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
+        verify(userWishlistRepository).deleteUserWishlist(WISHLIST_ID);
+    }
+
+    @Test
     void should_return_a_user_detail_wishlist() throws JsonProcessingException {
 
         final Wishlist wishlist = getWishlist();
