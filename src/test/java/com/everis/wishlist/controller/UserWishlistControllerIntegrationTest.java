@@ -54,7 +54,7 @@ class UserWishlistControllerIntegrationTest {
         final CreateWishlistProductRequest body = getCreateWishlistProductRequest();
 
         // GIVEN
-        doNothing().when(userWishlistService).createWishlistProduct(USER_ID, WISHLIST_ID, body);
+        doNothing().when(userWishlistService).createUserWishlistProduct(USER_ID, WISHLIST_ID, body);
 
         // WHEN, THEN
         mockMvc.perform(post("/api/v1/users/{userId}/wishlists/{wishlistId}/products", USER_ID, WISHLIST_ID)

@@ -18,27 +18,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserWishlistController {
 
-    private final UserWishlistService wishlistService;
+    private final UserWishlistService userWishlistService;
 
     @PostMapping(value = "/{wishlistId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId, @RequestBody CreateUserWishlistRequest body) {
-        wishlistService.createUserWishlist(userId, wishlistId, body);
+        userWishlistService.createUserWishlist(userId, wishlistId, body);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/{wishlistId}/products", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createWishlistProduct(@PathVariable UUID userId, @PathVariable UUID wishlistId, @RequestBody CreateWishlistProductRequest body) {
-        wishlistService.createWishlistProduct(userId, wishlistId, body);
+    public ResponseEntity<Void> createUserWishlistProduct(@PathVariable UUID userId, @PathVariable UUID wishlistId, @RequestBody CreateWishlistProductRequest body) {
+        userWishlistService.createUserWishlistProduct(userId, wishlistId, body);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/{wishlistId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
+        userWishlistService.deleteUserWishlist(userId, wishlistId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{wishlistId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistDetailResponse> getUserWishlist(@PathVariable UUID userId, @PathVariable UUID wishlistId) {
-        return new ResponseEntity<>(wishlistService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
+        return new ResponseEntity<>(userWishlistService.findUserWishlist(userId, wishlistId), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserWishlistsResponse> getUserWishlists(@PathVariable UUID userId) {
-        return new ResponseEntity<>(wishlistService.findUserWishlists(userId), HttpStatus.OK);
+        return new ResponseEntity<>(userWishlistService.findUserWishlists(userId), HttpStatus.OK);
     }
 }
