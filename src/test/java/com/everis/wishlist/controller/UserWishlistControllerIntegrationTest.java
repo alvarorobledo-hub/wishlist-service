@@ -70,6 +70,17 @@ class UserWishlistControllerIntegrationTest {
     }
 
     @Test
+    void should_endpoint_delete_user_wishlist_product() throws Exception {
+        // GIVEN
+        doNothing().when(userWishlistService).deleteUserWishlistProduct(USER_ID, WISHLIST_ID, PRODUCT_ID);
+
+        // WHEN, THEN
+        mockMvc.perform(delete("/api/v1/users/{userId}/wishlists/{wishlistId}/products/{productId}", USER_ID, WISHLIST_ID, PRODUCT_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void should_endpoint_get_user_wishlist_return_a_user_wishlist() throws Exception {
         final WishlistDetail wishlistDetail = getWishlistDetail();
         final UserWishlistDetailResponse response = UserWishlistDetailResponse.builder()
