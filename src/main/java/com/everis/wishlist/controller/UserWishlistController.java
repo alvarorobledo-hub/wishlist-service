@@ -1,6 +1,7 @@
 package com.everis.wishlist.controller;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.service.UserWishlistService;

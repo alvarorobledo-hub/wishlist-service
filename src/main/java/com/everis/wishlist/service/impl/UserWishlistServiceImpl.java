@@ -62,6 +62,15 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     public void createWishlistProduct(final UUID userId, final UUID wishlistId, final CreateWishlistProductRequest body) {
         log.info("Creating wishlist for user ({})", userId);
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
+
+        userWishlistValidator.validate(userId, wishlist, body);
+
+        try {
+            userWishlistRepository.createWishlistProduct(wishlistId, body.getProductId());
+            log.info("Created product with id ({}) for wishlist ({})", body.getProductId(), wishlist);
+        } catch (final Exception e) {
+            throw new InternalServerException("Something went wrong");
+        }
     }
 
     @Override
