@@ -2,6 +2,8 @@ package com.everis.wishlist.constants;
 
 public class SQLFileConstants {
 
+    private SQLFileConstants() {}
+
     public static final String FILE_CREATE_USER_WISHLIST = "/db/files/create_user_wishlist.sql";
     public static final String FILE_CREATE_WISHLIST = "/db/files/create_wishlist.sql";
     public static final String FILE_CREATE_WISHLIST_PRODUCT = "/db/files/create_wishlist_product.sql";

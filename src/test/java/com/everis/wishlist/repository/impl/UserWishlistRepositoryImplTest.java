@@ -5,14 +5,14 @@ import com.everis.wishlist.entity.Wishlist;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.everis.wishlist.constants.WishlistServiceConstants.*;
@@ -20,8 +20,8 @@ import static com.everis.wishlist.mock.WishlistServiceMock.*;
 import static com.everis.wishlist.utils.FileHelper.load;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserWishlistRepositoryImplTest {
@@ -99,10 +99,11 @@ class UserWishlistRepositoryImplTest {
     @Test
     void should_return_a_user_wishlist() throws JsonProcessingException {
         final Wishlist wishlist = getWishlist();
+        final List<Map<String, Object>> wishlistMap = getWishlistMap(wishlist);
         final Map<String, Object> params = getUserWishlistParams();
 
         // GIVEN
-        doReturn(wishlist).when(jdbcTemplate).queryForObject(eq(load(FILE_FIND_USER_WISHLIST)), eq(params), ArgumentMatchers.<RowMapper<Wishlist>>any());
+        doReturn(wishlistMap).when(jdbcTemplate).queryForList(load(FILE_FIND_USER_WISHLIST), params);
 
         // WHEN
         final Wishlist response = userWishlistRepository.findUserWishlist(USER_ID, WISHLIST_ID);
@@ -110,7 +111,7 @@ class UserWishlistRepositoryImplTest {
         // THEN
         assertAll("Response should be:",
                 () -> assertEquals(wishlist, response));
-        verify(jdbcTemplate).queryForObject(eq(load(FILE_FIND_USER_WISHLIST)), eq(params), ArgumentMatchers.<RowMapper<Wishlist>>any());
+        verify(jdbcTemplate).queryForList(load(FILE_FIND_USER_WISHLIST), params);
     }
 
     @Test
@@ -175,6 +176,18 @@ class UserWishlistRepositoryImplTest {
                     Map<String, Object> map = new HashMap<>();
                     map.put("ID", wishlist.getId());
                     map.put("NAME", wishlist.getName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<Map<String, Object>> getWishlistMap(final Wishlist wishlist) {
+        return wishlist.getProductIds().stream()
+                .map(productId -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("ID", wishlist.getId());
+                    map.put("NAME", wishlist.getName());
+                    map.put("PRODUCT_ID", productId);
                     return map;
                 })
                 .collect(Collectors.toList());

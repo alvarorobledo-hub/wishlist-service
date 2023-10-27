@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 public class FileHelper {
 
+    private FileHelper() {}
+
     @SneakyThrows
     public static String load(String file) {
         return new BufferedReader(

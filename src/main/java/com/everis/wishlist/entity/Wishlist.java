@@ -3,6 +3,7 @@ package com.everis.wishlist.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;

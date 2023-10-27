@@ -8,6 +8,8 @@ public class ObjectMapperHelper {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private ObjectMapperHelper() {}
+
     public static <T> T getObject(String content, TypeReference<T> type) throws JsonProcessingException {
         return objectMapper.readValue(content, type);
     }

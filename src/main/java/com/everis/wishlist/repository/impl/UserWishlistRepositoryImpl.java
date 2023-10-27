@@ -66,7 +66,20 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
         params.put(USER_ID, userId);
         params.put(WISHLIST_ID, wishlistId);
 
-        return jdbcTemplate.queryForObject(load(FILE_FIND_USER_WISHLIST), params, wishlistRowMapper());
+        final List<Map<String, Object>> rows = jdbcTemplate.queryForList(load(FILE_FIND_USER_WISHLIST), params);
+
+        Wishlist wishlist = Wishlist.builder()
+                .productIds(new ArrayList<>())
+                .build();
+        for(Map<String, Object> row : rows) {
+            if (wishlist.getId() == null) {
+                wishlist.setId((UUID) row.get("ID"));
+                wishlist.setName((String) row.get("NAME"));
+            }
+            wishlist.getProductIds().add((Long) row.get("PRODUCT_ID"));
+        }
+
+        return wishlist;
     }
 
     @Override
@@ -97,27 +110,5 @@ public class UserWishlistRepositoryImpl implements UserWishlistRepository {
         params.put(WISHLIST_ID, wishlistId);
 
         jdbcTemplate.update(load(FILE_CREATE_USER_WISHLIST), params);
-    }
-
-    private RowMapper<Wishlist> wishlistRowMapper() {
-        return (rs, rowNum) -> {
-            Wishlist wishlist = Wishlist.builder()
-                    .id(rs.getObject(ID, UUID.class))
-                    .name(rs.getString(NAME))
-                    .build();
-
-            List<Long> productIds = new ArrayList<>();
-            do {
-                final Long productId = rs.getLong(PRODUCT_ID);
-
-                if (!ObjectUtils.isEmpty(productId)) {
-                    productIds.add(productId);
-                }
-
-            } while (rs.next());
-
-            wishlist.setProductIds(productIds);
-            return wishlist;
-        };
     }
 }
