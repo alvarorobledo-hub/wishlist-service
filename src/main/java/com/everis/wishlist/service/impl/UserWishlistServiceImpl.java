@@ -67,7 +67,7 @@ public class UserWishlistServiceImpl implements UserWishlistService {
 
         try {
             userWishlistRepository.createWishlistProduct(wishlistId, body.getProductId());
-            log.info("Created product with id ({}) for wishlist ({})", body.getProductId(), wishlist);
+            log.info("Created product with id ({}) for wishlist ({})", body.getProductId(), wishlist.getId());
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }

@@ -1,5 +1,6 @@
 package com.everis.wishlist.controller.handler;
 
+import com.everis.wishlist.exceptions.MaxProductsPerWishlistException;
 import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
 import com.everis.wishlist.exceptions.http.BadRequestException;
 import com.everis.wishlist.exceptions.http.InternalServerException;
@@ -71,13 +72,29 @@ class UserWishlistHandlerControllerTest {
 
     @Test
     void handler_should_throw_max_wishlists_per_user_exception() {
-        final String errorMsg = "User 123 actually have 5 wishlists. Can not create more";
+        final String errorMsg = "User 123 actually have 5 wishlists. Cannot create more";
 
         // GIVEN
         final MaxWishlistsPerUserException exception = new MaxWishlistsPerUserException(errorMsg);
 
         // WHEN
         final ResponseEntity<String> response = userWishlistHandlerController.handleMaxWishlistsPerUserException(exception);
+
+        // THEN
+        assertAll("Exception should be:",
+                () -> assertEquals(HttpStatus.CONFLICT, response.getStatusCode()),
+                () -> assertEquals(errorMsg, response.getBody()));
+    }
+
+    @Test
+    void handler_should_throw_max_products_per_wishlist_exception() {
+        final String errorMsg = "Wishlist 123 actually have 25 products. Cannot create more";
+
+        // GIVEN
+        final MaxProductsPerWishlistException exception = new MaxProductsPerWishlistException(errorMsg);
+
+        // WHEN
+        final ResponseEntity<String> response = userWishlistHandlerController.handleMaxProductsPerWishlistException(exception);
 
         // THEN
         assertAll("Exception should be:",
