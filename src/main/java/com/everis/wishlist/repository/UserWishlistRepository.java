@@ -10,6 +10,7 @@ public interface UserWishlistRepository {
     void createWishlist(UUID userId, UUID wishlistId, String name);
     void createWishlistProduct(UUID wishlistId, Long productId);
     void deleteUserWishlist(UUID wishlistId);
+    void deleteUserWishlistProduct(UUID wishlistId, Long productId);
     Wishlist findUserWishlist(UUID userId, UUID wishlistId);
     List<Wishlist> findUserWishlists(UUID userId);
 }
