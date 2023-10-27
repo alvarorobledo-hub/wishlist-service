@@ -1,7 +1,10 @@
 package com.everis.wishlist.validator;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.entity.Wishlist;
+import com.everis.wishlist.entity.WishlistDetail;
+import com.everis.wishlist.exceptions.MaxProductsPerWishlistException;
 import com.everis.wishlist.exceptions.MaxWishlistsPerUserException;
 import com.everis.wishlist.exceptions.http.BadRequestException;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,7 @@ import java.util.UUID;
 public class UserWishlistValidator {
 
     private static final Integer MAX_WISHLISTS_PER_USER = 5;
+    private static final Integer MAX_PRODUCTS_PER_WISHLIST = 25;
 
     public void validate(final UUID userId, final CreateUserWishlistRequest body, final List<Wishlist> wishlists) {
 
@@ -27,6 +31,17 @@ public class UserWishlistValidator {
 
         if (wishlists.size() >= MAX_WISHLISTS_PER_USER) {
             throw new MaxWishlistsPerUserException("User %s actually have %s wishlists. Cannot create more", userId, MAX_WISHLISTS_PER_USER);
+        }
+    }
+
+    public void validate(final UUID userId, final WishlistDetail wishlist, final CreateWishlistProductRequest body) {
+
+        if (body.getProductId() == null) {
+            throw new BadRequestException("ProductId must not be null");
+        }
+
+        if (wishlist.getProducts().size() >= MAX_PRODUCTS_PER_WISHLIST) {
+            throw new MaxProductsPerWishlistException("Wishlist %s actually have %s products. Cannot create more", userId, MAX_PRODUCTS_PER_WISHLIST);
         }
     }
 }

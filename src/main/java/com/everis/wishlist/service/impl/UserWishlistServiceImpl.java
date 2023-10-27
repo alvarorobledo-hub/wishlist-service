@@ -1,6 +1,7 @@
 package com.everis.wishlist.service.impl;
 
 import com.everis.wishlist.dto.request.CreateUserWishlistRequest;
+import com.everis.wishlist.dto.request.CreateWishlistProductRequest;
 import com.everis.wishlist.dto.response.UserWishlistDetailResponse;
 import com.everis.wishlist.dto.response.UserWishlistsResponse;
 import com.everis.wishlist.entity.Wishlist;
@@ -55,6 +56,12 @@ public class UserWishlistServiceImpl implements UserWishlistService {
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }
+    }
+
+    @Override
+    public void createWishlistProduct(final UUID userId, final UUID wishlistId, final CreateWishlistProductRequest body) {
+        log.info("Creating wishlist for user ({})", userId);
+        final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
     }
 
     @Override
