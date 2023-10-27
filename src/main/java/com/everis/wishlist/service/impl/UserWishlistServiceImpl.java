@@ -35,13 +35,12 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     @Transactional
     @Override
     public void createUserWishlist(final UUID userId, final UUID wishlistId, final CreateUserWishlistRequest body) {
-
-        log.info("Creating wishlist for user ({})", userId);
         final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
 
         userWishlistValidator.validate(userId, body, wishlists);
 
         try {
+            log.info("Creating wishlist for user ({})", userId);
 
             userWishlistRepository.createWishlist(userId, wishlistId, body.getName());
             for (Long productId : body.getProductIds()) {
@@ -58,15 +57,29 @@ public class UserWishlistServiceImpl implements UserWishlistService {
     }
 
     @Override
-    public void createWishlistProduct(final UUID userId, final UUID wishlistId, final CreateWishlistProductRequest body) {
-        log.info("Creating wishlist for user ({})", userId);
+    public void createUserWishlistProduct(final UUID userId, final UUID wishlistId, final CreateWishlistProductRequest body) {
         final WishlistDetail wishlist = findUserWishlist(userId, wishlistId).getWishlistDetail();
-
         userWishlistValidator.validate(wishlist, body);
 
         try {
+            log.info("Creating wishlist ({}) for user ({})", wishlistId, userId);
             userWishlistRepository.createWishlistProduct(wishlistId, body.getProductId());
             log.info("Created product with id ({}) for wishlist ({})", body.getProductId(), wishlist.getId());
+        } catch (final Exception e) {
+            throw new InternalServerException("Something went wrong");
+        }
+    }
+
+    @Override
+    public void deleteUserWishlist(final UUID userId, final UUID wishlistId) {
+
+        final List<Wishlist> wishlists = findUserWishlists(userId).getWishlists();
+        userWishlistValidator.validateWishlistOwner(userId, wishlistId, wishlists);
+
+        try {
+            log.info("Deleting wishlist ({}) for user ({})", wishlistId, userId);
+            userWishlistRepository.deleteUserWishlist(userId, wishlistId);
+            log.info("Deleted successfully wishlist ({}) for user ({})", wishlistId, userId);
         } catch (final Exception e) {
             throw new InternalServerException("Something went wrong");
         }

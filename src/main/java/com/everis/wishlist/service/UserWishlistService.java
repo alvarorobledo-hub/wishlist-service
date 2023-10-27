@@ -9,7 +9,8 @@ import java.util.UUID;
 
 public interface UserWishlistService {
     void createUserWishlist(UUID userId, UUID wishlistId, CreateUserWishlistRequest body);
-    void createWishlistProduct(UUID userId, UUID wishlistId, CreateWishlistProductRequest body);
+    void createUserWishlistProduct(UUID userId, UUID wishlistId, CreateWishlistProductRequest body);
+    void deleteUserWishlist(UUID userId, UUID wishlistId);
     UserWishlistDetailResponse findUserWishlist(UUID userId, UUID wishlistId);
     UserWishlistsResponse findUserWishlists(UUID userId);
 }

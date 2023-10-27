@@ -128,7 +128,7 @@ class WishlistServiceImplTest {
         doNothing().when(userWishlistRepository).createWishlistProduct(WISHLIST_ID, body.getProductId());
 
         // WHEN
-        userWishlistService.createWishlistProduct(USER_ID, WISHLIST_ID, body);
+        userWishlistService.createUserWishlistProduct(USER_ID, WISHLIST_ID, body);
 
         // THEN
         verify(userWishlistRepository).findUserWishlist(USER_ID, WISHLIST_ID);
@@ -151,7 +151,7 @@ class WishlistServiceImplTest {
 
         // WHEN
         final InternalServerException exception = assertThrows(InternalServerException.class,
-                () -> userWishlistService.createWishlistProduct(USER_ID, WISHLIST_ID, body));
+                () -> userWishlistService.createUserWishlistProduct(USER_ID, WISHLIST_ID, body));
 
         // THEN
         assertAll("Exception should be:",
