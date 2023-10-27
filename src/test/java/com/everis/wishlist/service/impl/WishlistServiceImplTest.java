@@ -82,7 +82,7 @@ class WishlistServiceImplTest {
 
         // THEN
         assertAll("Exception should be:",
-                () -> assertEquals(format("Name %s for wishlist already exists", body.getName()), exception.getMessage()));
+                () -> assertEquals(format("Name (%s) for wishlist already exists", body.getName()), exception.getMessage()));
         verify(userWishlistRepository).findUserWishlists(USER_ID);
         verify(userWishlistValidator).validate(USER_ID, body, wishlists);
         verify(userWishlistRepository).createWishlist(USER_ID, WISHLIST_ID, body.getName());
