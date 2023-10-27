@@ -230,7 +230,7 @@ class WishlistServiceImplTest {
         final WishlistDetail wishlistDetail = getWishlistDetail();
 
         // GIVEN
-        wishlist.setProductIds(Collections.emptyList());
+        wishlistDetail.setProducts(Collections.emptyList());
         doReturn(wishlists).when(userWishlistRepository).findUserWishlists(USER_ID);
         doNothing().when(userWishlistValidator).validateWishlistOwner(USER_ID, WISHLIST_ID, wishlists);
         doNothing().when(userWishlistRepository).deleteUserWishlistProduct(WISHLIST_ID, PRODUCT_ID);
